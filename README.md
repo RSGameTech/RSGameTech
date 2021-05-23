@@ -1,6 +1,7 @@
 ### Hi there 👋
 
 ![Nikto Banner](https://cdn.discordapp.com/attachments/843547485540188181/843547960657707018/Nikto_Banner.png "Nikto Banner")
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Wiper-R&theme=onedark&layout=compact)](https://github.com/RSGameTech)
 
 - 🔭 I’m currently working on Nikto Discord BOT
 - 🌱 I’m currently learning Python
