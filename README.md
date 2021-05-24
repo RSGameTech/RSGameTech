@@ -1,6 +1,6 @@
 ### Hi there 👋
 
-[![RSGametech's GitHub stats](https://github-readme-stats.vercel.app/api?username=RSGameTech&show_icons=true&theme=vision-friendly-dark)](https://github.com/RSGameTech)
+[![RSGametech's GitHub stats](https://github-readme-stats.vercel.app/api?username=RSGameTech&title_color=7289DA&icon_color=7289DA&text_color=FFFFFF&bg_color=2C2F33&show_icons=true)](https://github.com/RSGameTech)
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=RSGameTech&theme=onedark&layout=compact)
 
