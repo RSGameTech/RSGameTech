@@ -20,10 +20,10 @@
 <h2 align="center">Connect with me</h2>
 <p align="center">
     <a href="https://www.youtube.com/channel/UC0Wu3Hu3NSeYVwQCqKhRUUQ">
-        <img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/youtube.svg" alt="YouTube Channel" height="40">
+        <img align="center" src="./assets/youtube.svg" alt="YouTube Channel" height="40">
     </a>
     <a href="https://discord.gg/GPJzCH7">
-        <img align="center" src="https://cdn.discordapp.com/attachments/846086309252169769/846086641974116362/Discord-Logo-Color.png" alt="Discord Server" height="40">
+        <img align="center" src="./assets/discord.svg" alt="Discord Server" height="25">
     </a>
 </p>
 
