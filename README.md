@@ -26,8 +26,6 @@
 
 ---
 
-<br>
-
 <img align="right" src="https://github-readme-stats.vercel.app/api/top-langs/?username=RSGameTech&langs_count=8&theme=github_dark&layout=compact" alt="Most Used Languages">
 <h2 align="center">Languages Learning</h2>
 <div align="center">
@@ -38,8 +36,6 @@
     <a href=""><img src="https://img.shields.io/badge/CSS-%230d1117?style=for-the-badge&logo=css3" alt="CSS" height="25"></a>
     <a href=""><img src="https://img.shields.io/badge/Javascript-%230d1117?style=for-the-badge&logo=javascript" alt="Javascript" height="25"></a>
 </div>
-
-<br>
 
 ---
 
