@@ -32,7 +32,7 @@
 <h2 align="center">Languages</h2>
 <p align="center">
     <a href="https://www.python.org/">
-        <img src="https://www.python.org/static/community_logos/python-logo-inkscape.svg" alt="Python" height="40">
+        <img src="./assets/python-logo.svg" alt="Python" height="40">
     </a>
 </p>
 <p align="center">
