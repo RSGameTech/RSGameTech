@@ -1,4 +1,4 @@
-<h1 align="center">Hi👋, I'm RSGameTech</h1>
+<h1 align="center">Hi👋, I'm Ritam Sarkar</h1>
 
 <br>
 
@@ -41,7 +41,7 @@
 
 <h2 align="left">System & Tools</h2>
 <p align="left">
-    <a href="https://www.microsoft.com/en-in/windows?r=1"><img src="https://img.shields.io/badge/Windows-%232a2a2a?style=for-the-badge&logo=microsoft&logoColor=%230078D6" alt="Windows" height="25"></a>
+    <a href="https://www.microsoft.com/en-in/windows?r=1"><img src="https://img.shields.io/badge/Windows-%23091633?style=for-the-badge&logo=microsoft&logoColor=%234BCADD" alt="Windows" height="25"></a>
     <a href="https://www.android.com/intl/en_in/"><img src="https://img.shields.io/badge/Android-%232a2a2a?style=for-the-badge&logo=android" alt="Android" height="25"></a>
     <a href="https://code.visualstudio.com"><img src="https://img.shields.io/badge/Visual%20Studio%20Code-%232a2a2a?style=for-the-badge&logo=visualstudiocode&logoColor=%23007acc" alt="Visual Studio Code" height="25"></a>
 <p>
