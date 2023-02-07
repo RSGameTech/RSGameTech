@@ -8,7 +8,7 @@
 
 <p>
     <a href="https://github.com/RSGameTech">
-        <img src="https://github-readme-stats.vercel.app/api?username=RSGameTech&count_private=true&theme=github_dark&show_icons=true" alt="GitHub Stats">
+        <img src="https://github-readme-stats.vercel.app/api?username=RSGameTech&count_private=true&show_icons=true&bg_color=091633&title_color=4BCADD&text_color=3C8DBC&icon_color=2E4D82&border_color=4BCADD" alt="GitHub Stats">
     </a>
 </p>
 
