@@ -2,8 +2,8 @@
 
 <br>
 
-- 🔭 I'm currently attending JEE, CUSAT Exam
-- 🌱 I’m currently learning Python, JavaScript, HTML, CSS
+- 🔭 I'm currently attending HCL TechBee Program
+- 🌱 I’m currently learning Android App Development
 - Currently I am doing experiment on ReadMe
 
 <p>
