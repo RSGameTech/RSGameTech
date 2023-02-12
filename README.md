@@ -1,5 +1,5 @@
 <h1>Hello, I am RSGametech</h1>
-2020
+<img src="asset/wanderer.png" height="400px" tag="Wanderer">
 <div>
     <a href=""><img src="https://img.shields.io/badge/RSGameTech%237621-%23091633?style=for-the-badge&logo=discord&logoColor=%234BCADD" tag="Discord"></a>
     <a href=""><img src="https://img.shields.io/badge/rsgametech0604-%23091633?style=for-the-badge&logo=instagram&logoColor=%234BCADD" tag="Instagram"></a>
