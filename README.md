@@ -29,7 +29,7 @@
 
 ---
 
-<h2>Tech World</h2>
+<h2>Tech Stack</h2>
 <div>
     <img src="https://img.shields.io/badge/Android-%232a2a2a?style=for-the-badge&logo=android" tag="Android">
     <img src="https://img.shields.io/badge/Android%20Studio-%232a2a2a?style=for-the-badge&logo=androidstudio" tag="Android Studio">
