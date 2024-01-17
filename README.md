@@ -25,6 +25,9 @@
     <a href="https://github.com/RSGameTech/Genshin-Elements">
         <img src="https://github-readme-stats.vercel.app/api/pin/?username=RSGameTech&repo=Genshin-Elements&theme=github_dark" tag="Genshin Elements">
     </a>
+    <a href="https://github.com/RSGameTech/CodehubX">
+        <img src="https://github-readme-stats.vercel.app/api/pin/?username=RSGameTech&repo=CodehubX&theme=github_dark" tag="CodeHubX">
+    </a>
 </div>
 
 ---
