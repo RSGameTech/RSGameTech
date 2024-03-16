@@ -1,4 +1,6 @@
-<h1 align="center">Hello There, I am Ritam Sarkar (19y.o.)!</h1>
+<div align="center">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=25&duration=4000&pause=1000&center=true&vCenter=true&random=false&width=450&lines=Hello+There!;I+am+Ritam+Sarkar+(19+y.o)" alt="Typing SVG" />
+</div>
 <div align="center">
     <img src="asset/wanderer.png" height="400px" tag="Wanderer" />
     <p>I like to do App and Web Development</p>
