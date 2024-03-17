@@ -26,15 +26,20 @@
 </div>
 
 <h2>GitHub Stats</h2>
-<a href="https://github.com/RSGameTech">
-    <img src="https://github-readme-stats.vercel.app/api?username=RSGameTech&count_private=true&show_icons=true&bg_color=091633&title_color=4BCADD&text_color=3C8DBC&icon_color=2E4D82&border_color=4BCADD" alt="GitHub Stats" />
-</a>
+<div>
+    <a href="https://github.com/RSGameTech">
+        <img src="https://github-readme-stats.vercel.app/api?username=RSGameTech&count_private=true&show_icons=true&bg_color=091633&title_color=4BCADD&text_color=3C8DBC&icon_color=2E4D82&border_color=4BCADD" alt="GitHub Stats" />
+    </a>
+    <a href="">
+        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=RSGameTech&langs_count=8&layout=compact&bg_color=091633&title_color=4BCADD&text_color=3C8DBC&icon_color=2E4D82&border_color=4BCADD" alt="Top Language" />
+    </a>
+</div>
 
 <h2>Current EDC Items</h2>
 <details>
     <summary><b>📱Phones</b></summary>
 
-    Redmi 10 Prime (128GB/6GB)
+    Redmi 10 Prime (128GB/6GB) (Main)
 
 </details>
 <details>
