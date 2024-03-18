@@ -16,7 +16,7 @@
 </div>
 
 <h2>Current Projects</h2>
-<div>
+<div align="center">
     <a href="https://github.com/RSGameTech/Genshin-Elements">
         <img src="https://github-readme-stats.vercel.app/api/pin/?username=RSGameTech&repo=Genshin-Elements&theme=github_dark" tag="Genshin Elements" />
     </a>
@@ -26,7 +26,7 @@
 </div>
 
 <h2>GitHub Stats</h2>
-<div>
+<div align="center">
     <a href="https://github.com/RSGameTech">
         <img src="https://github-readme-stats.vercel.app/api?username=RSGameTech&count_private=true&show_icons=true&bg_color=091633&title_color=4BCADD&text_color=3C8DBC&icon_color=2E4D82&border_color=4BCADD" alt="GitHub Stats" />
     </a>
