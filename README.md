@@ -45,7 +45,7 @@
 <details>
     <summary><b>💻Laptop</b></summary>
 
-    ASUS Vivobook X541U
+    Lenovo LOQ 15IAX9
 
 </details>
 <details>
