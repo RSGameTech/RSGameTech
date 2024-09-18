@@ -8,11 +8,9 @@
 
 <h2>Currently Learning</h2>
 <div>
-    <img src="https://img.shields.io/badge/Dart-2a2a2a?style=for-the-badge&logo=dart&logoColor=0175C2" tag="Dart" />
     <img src="https://img.shields.io/badge/HTML-2a2a2a?style=for-the-badge&logo=html5" tag="HTML" />
     <img src="https://img.shields.io/badge/CSS-2a2a2a?style=for-the-badge&logo=css3&logoColor=1572B6" tag="CSS" />
     <img src="https://img.shields.io/badge/Javascript-2a2a2a?style=for-the-badge&logo=javascript" tag="JavaScript" />
-    <img src="https://img.shields.io/badge/Kotlin-%232a2a2a?style=for-the-badge&logo=kotlin" tag="Kotlin" />
 </div>
 
 <h2>Current Projects</h2>
