@@ -49,7 +49,7 @@
 <details>
     <summary><b>⌚Wearables</b></summary>
 
-    Redmi Smart Band Pro
+    CMF Watch Pro
 
 </details>
 <details>
