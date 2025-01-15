@@ -1,8 +1,9 @@
 <div align="center">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=25&duration=4000&pause=1000&center=true&vCenter=true&random=false&width=450&lines=Hello+There!;I+am+Ritam+Sarkar+(20+y.o)" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=25&duration=4000&pause=1000&color=C69D81&center=true&vCenter=true&random=false&width=450&lines=Hello+There!;I+am+Ritam+Sarkar+(20+y.o)" alt="Typing SVG" />
 </div>
 <div align="center">
-    <img src="asset/wanderer.png" height="400px" tag="Wanderer" />
+    <img src="asset/git-header.png" tag="banner" />
+<!--     <img src="asset/wanderer.png" height="400px" tag="Wanderer" /> -->
     <p>I like to do App and Web Development</p>
 </div>
 
@@ -66,9 +67,9 @@
 <p>Always up for chats, but replies may be turtle-paced.</p>
 <div>
     <a href="">
-        <img src="https://img.shields.io/badge/rsgametech0604-%23091633?style=flat-square&logo=instagram&logoColor=%234BCADD" tag="Instagram" />
+        <img src="https://img.shields.io/badge/rsgametech0604-%23985638?style=flat&logo=instagram&logoColor=%23C69D81" tag="Instagram" />
     </a>
     <a href="https://www.youtube.com/@RSGameTechOfficial">
-        <img src="https://img.shields.io/badge/RSGameTech-%23091633?style=flat-square&logo=youtube&logoColor=%234BCADD" tag="YouTube Channel" />
+        <img src="https://img.shields.io/badge/RSGameTech-%23985638?style=flat&logo=youtube&logoColor=%23C69D81" tag="YouTube Channel" />
     </a>
 </div>
