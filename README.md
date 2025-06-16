@@ -16,8 +16,8 @@
 
 <h2>Current Projects</h2>
 <div align="center">
-    <a href="https://github.com/RSGameTech/Genshin-Elements">
-        <img src="https://github-readme-stats.vercel.app/api/pin/?username=RSGameTech&repo=Genshin-Elements&theme=github_dark" tag="Genshin Elements" />
+    <a href="https://github.com/RSGameTech/nixos-dotfiles">
+        <img src="https://github-readme-stats.vercel.app/api/pin/?username=RSGameTech&repo=nixos-dotfiles&theme=github_dark" tag="NixOS Dotfiles Repo" />
     </a>
     <a href="https://github.com/RSGameTech/CodehubX">
         <img src="https://github-readme-stats.vercel.app/api/pin/?username=SIDDHU123M&repo=CodehubX&theme=github_dark" tag="CodeHubX" />
