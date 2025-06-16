@@ -4,7 +4,7 @@
 <div align="center">
     <img src="asset/git-header.png" tag="banner" />
 <!--     <img src="asset/wanderer.png" height="400px" tag="Wanderer" /> -->
-    <p>I like to do App and Web Development</p>
+<!--     <p>I like to do App and Web Development</p> -->
 </div>
 
 <h2>Currently Learning</h2>
