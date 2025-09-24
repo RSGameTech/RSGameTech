@@ -37,8 +37,8 @@
 <h2>Current EDC Items</h2>
 <details>
     <summary><b>📱Phones</b></summary>
-
-    Redmi 10 Prime (128GB/6GB) (Main)
+    Xiaomi 15 (512GB/12GB) (Main)
+    Redmi 10 Prime (128GB/6GB) (Secondary)
 
 </details>
 <details>
@@ -59,6 +59,7 @@
     KZ EDX Pro
     ├─Cable -> Stock 3.5mm Connector
     └─Eartip -> Stock
+    Moondrop Space Travel 2
 
 </details>
 
