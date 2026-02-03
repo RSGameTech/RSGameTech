@@ -38,7 +38,6 @@
 <details>
     <summary><b>📱Phones</b></summary>
     Xiaomi 15 (512GB/12GB) (Main)
-    Redmi 10 Prime (128GB/6GB) (Secondary)
 
 </details>
 <details>
