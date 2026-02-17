@@ -1,0 +1,421 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Dark Minimal (default) */
+  :root,
+  [data-theme="dark-minimal"] {
+    --background: 228 15% 7%;
+    --foreground: 210 20% 90%;
+
+    --card: 228 15% 10%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 228 15% 10%;
+    --popover-foreground: 210 20% 90%;
+
+    --primary: 210 50% 60%;
+    --primary-foreground: 228 15% 7%;
+
+    --secondary: 228 12% 14%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 228 12% 16%;
+    --muted-foreground: 210 10% 55%;
+
+    --accent: 228 12% 18%;
+    --accent-foreground: 210 20% 90%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 228 10% 18%;
+    --input: 228 10% 18%;
+    --ring: 210 50% 60%;
+    --radius: 0.5rem;
+
+    --glass-bg: 228 15% 12% / 0.35;
+    --glass-border: 210 20% 90% / 0.08;
+    --glass-inner-bg: 228 15% 15% / 0.25;
+    --glass-inner-border: 210 20% 90% / 0.06;
+    --dot-color: 210 20% 90%;
+  }
+
+  /* Minimal Light — premium warm off-white */
+  [data-theme="minimal-light"] {
+    --background: 40 20% 95%;
+    --foreground: 30 10% 15%;
+
+    --card: 40 25% 98%;
+    --card-foreground: 30 10% 15%;
+
+    --popover: 40 25% 98%;
+    --popover-foreground: 30 10% 15%;
+
+    --primary: 30 40% 42%;
+    --primary-foreground: 40 25% 98%;
+
+    --secondary: 40 15% 90%;
+    --secondary-foreground: 30 10% 20%;
+
+    --muted: 40 12% 90%;
+    --muted-foreground: 30 8% 45%;
+
+    --accent: 40 15% 88%;
+    --accent-foreground: 30 10% 15%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 40 25% 98%;
+
+    --border: 40 12% 86%;
+    --input: 40 12% 86%;
+    --ring: 30 40% 42%;
+
+    --glass-bg: 40 25% 98% / 0.4;
+    --glass-border: 30 10% 15% / 0.07;
+    --glass-inner-bg: 40 25% 97% / 0.35;
+    --glass-inner-border: 30 10% 15% / 0.05;
+    --dot-color: 30 10% 35%;
+  }
+
+  /* Nord */
+  [data-theme="nord"] {
+    --background: 220 16% 16%;
+    --foreground: 219 28% 88%;
+
+    --card: 220 16% 20%;
+    --card-foreground: 219 28% 88%;
+
+    --popover: 220 16% 20%;
+    --popover-foreground: 219 28% 88%;
+
+    --primary: 213 32% 52%;
+    --primary-foreground: 220 16% 16%;
+
+    --secondary: 220 16% 24%;
+    --secondary-foreground: 219 28% 85%;
+
+    --muted: 220 16% 22%;
+    --muted-foreground: 219 15% 55%;
+
+    --accent: 220 16% 26%;
+    --accent-foreground: 219 28% 88%;
+
+    --destructive: 354 42% 56%;
+    --destructive-foreground: 219 28% 88%;
+
+    --border: 220 16% 24%;
+    --input: 220 16% 24%;
+    --ring: 213 32% 52%;
+
+    --glass-bg: 220 16% 20% / 0.35;
+    --glass-border: 219 28% 88% / 0.08;
+    --glass-inner-bg: 220 16% 23% / 0.25;
+    --glass-inner-border: 219 28% 88% / 0.06;
+    --dot-color: 219 28% 70%;
+  }
+
+
+  /* Solarized */
+  [data-theme="solarized"] {
+    --background: 192 100% 6%;
+    --foreground: 44 87% 94%;
+
+    --card: 192 81% 10%;
+    --card-foreground: 44 87% 94%;
+
+    --popover: 192 81% 10%;
+    --popover-foreground: 44 87% 94%;
+
+    --primary: 175 59% 40%;
+    --primary-foreground: 192 100% 6%;
+
+    --secondary: 192 81% 14%;
+    --secondary-foreground: 44 87% 90%;
+
+    --muted: 192 81% 12%;
+    --muted-foreground: 180 7% 50%;
+
+    --accent: 192 81% 16%;
+    --accent-foreground: 44 87% 94%;
+
+    --destructive: 1 71% 52%;
+    --destructive-foreground: 44 87% 94%;
+
+    --border: 192 81% 14%;
+    --input: 192 81% 14%;
+    --ring: 175 59% 40%;
+
+    --glass-bg: 192 81% 10% / 0.35;
+    --glass-border: 44 87% 94% / 0.08;
+    --glass-inner-bg: 192 81% 13% / 0.25;
+    --glass-inner-border: 44 87% 94% / 0.06;
+    --dot-color: 44 87% 80%;
+  }
+
+  /* Catppuccin Mocha */
+  [data-theme="catppuccin-mocha"] {
+    --background: 240 21% 12%;
+    --foreground: 227 70% 87%;
+
+    --card: 240 21% 15%;
+    --card-foreground: 227 70% 87%;
+
+    --popover: 240 21% 15%;
+    --popover-foreground: 227 70% 87%;
+
+    --primary: 267 84% 81%;
+    --primary-foreground: 240 21% 12%;
+
+    --secondary: 240 21% 19%;
+    --secondary-foreground: 227 70% 83%;
+
+    --muted: 240 21% 17%;
+    --muted-foreground: 228 20% 55%;
+
+    --accent: 240 21% 21%;
+    --accent-foreground: 227 70% 87%;
+
+    --destructive: 347 87% 68%;
+    --destructive-foreground: 227 70% 87%;
+
+    --border: 240 21% 19%;
+    --input: 240 21% 19%;
+    --ring: 267 84% 81%;
+
+    --glass-bg: 240 21% 15% / 0.35;
+    --glass-border: 227 70% 87% / 0.08;
+    --glass-inner-bg: 240 21% 18% / 0.25;
+    --glass-inner-border: 227 70% 87% / 0.06;
+    --dot-color: 227 70% 70%;
+  }
+
+  /* Catppuccin Frappé */
+  [data-theme="catppuccin-frappe"] {
+    --background: 229 19% 18%;
+    --foreground: 227 50% 87%;
+
+    --card: 229 19% 22%;
+    --card-foreground: 227 50% 87%;
+
+    --popover: 229 19% 22%;
+    --popover-foreground: 227 50% 87%;
+
+    --primary: 222 74% 74%;
+    --primary-foreground: 229 19% 18%;
+
+    --secondary: 229 19% 26%;
+    --secondary-foreground: 227 50% 83%;
+
+    --muted: 229 19% 24%;
+    --muted-foreground: 227 15% 53%;
+
+    --accent: 229 19% 28%;
+    --accent-foreground: 227 50% 87%;
+
+    --destructive: 359 68% 71%;
+    --destructive-foreground: 227 50% 87%;
+
+    --border: 229 19% 26%;
+    --input: 229 19% 26%;
+    --ring: 222 74% 74%;
+
+    --glass-bg: 229 19% 22% / 0.35;
+    --glass-border: 227 50% 87% / 0.08;
+    --glass-inner-bg: 229 19% 25% / 0.25;
+    --glass-inner-border: 227 50% 87% / 0.06;
+    --dot-color: 227 50% 72%;
+  }
+
+  /* Catppuccin Macchiato */
+  [data-theme="catppuccin-macchiato"] {
+    --background: 232 23% 15%;
+    --foreground: 227 68% 88%;
+
+    --card: 232 23% 18%;
+    --card-foreground: 227 68% 88%;
+
+    --popover: 232 23% 18%;
+    --popover-foreground: 227 68% 88%;
+
+    --primary: 267 83% 80%;
+    --primary-foreground: 232 23% 15%;
+
+    --secondary: 232 23% 22%;
+    --secondary-foreground: 227 68% 84%;
+
+    --muted: 232 23% 20%;
+    --muted-foreground: 228 18% 54%;
+
+    --accent: 232 23% 24%;
+    --accent-foreground: 227 68% 88%;
+
+    --destructive: 351 74% 73%;
+    --destructive-foreground: 227 68% 88%;
+
+    --border: 232 23% 22%;
+    --input: 232 23% 22%;
+    --ring: 267 83% 80%;
+
+    --glass-bg: 232 23% 18% / 0.35;
+    --glass-border: 227 68% 88% / 0.08;
+    --glass-inner-bg: 232 23% 21% / 0.25;
+    --glass-inner-border: 227 68% 88% / 0.06;
+    --dot-color: 227 68% 72%;
+  }
+
+  /* Catppuccin Latte */
+  [data-theme="catppuccin-latte"] {
+    --background: 220 23% 95%;
+    --foreground: 234 16% 35%;
+
+    --card: 220 23% 98%;
+    --card-foreground: 234 16% 35%;
+
+    --popover: 220 23% 98%;
+    --popover-foreground: 234 16% 35%;
+
+    --primary: 266 85% 58%;
+    --primary-foreground: 220 23% 95%;
+
+    --secondary: 220 22% 90%;
+    --secondary-foreground: 234 16% 38%;
+
+    --muted: 220 20% 90%;
+    --muted-foreground: 233 10% 47%;
+
+    --accent: 220 22% 87%;
+    --accent-foreground: 234 16% 35%;
+
+    --destructive: 347 87% 44%;
+    --destructive-foreground: 220 23% 95%;
+
+    --border: 220 20% 87%;
+    --input: 220 20% 87%;
+    --ring: 266 85% 58%;
+
+    --glass-bg: 220 23% 98% / 0.4;
+    --glass-border: 234 16% 35% / 0.07;
+    --glass-inner-bg: 220 23% 97% / 0.35;
+    --glass-inner-border: 234 16% 35% / 0.05;
+    --dot-color: 234 16% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    overscroll-behavior: none;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  }
+
+  /* Make Simple Icons follow foreground color in dark/light themes */
+  .invert-icon {
+    filter: brightness(0) invert(1);
+  }
+
+  [data-theme="minimal-light"] .invert-icon,
+  [data-theme="catppuccin-latte"] .invert-icon {
+    filter: brightness(0);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--glass-border));
+  }
+
+  .glass-inner {
+    background: hsl(var(--glass-inner-bg));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid hsl(var(--glass-inner-border));
+  }
+}
+
+/* Mouse glow on containers — desktop only */
+@media (pointer: fine) {
+  .glow-container,
+  nav .glass,
+  footer .glass {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glow-container::before,
+  nav .glass::before,
+  footer .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+      400px circle at var(--mx, -999px) var(--my, -999px),
+      hsl(var(--primary) / 0.07) 0%,
+      transparent 70%
+    );
+    background-attachment: fixed;
+  }
+
+  .glow-container:hover::before,
+  nav .glass:hover::before,
+  footer .glass:hover::before {
+    opacity: 1;
+  }
+
+  /* Always show glow on all containers when mouse is on page */
+  :root:has(:hover) .glow-container::before,
+  :root:has(:hover) nav .glass::before,
+  :root:has(:hover) footer .glass::before {
+    opacity: 1;
+  }
+
+  /* Border glow effect */
+  .glow-container::after,
+  nav .glass::after,
+  footer .glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.12);
+    background: radial-gradient(
+      300px circle at var(--mx, -999px) var(--my, -999px),
+      hsl(var(--primary) / 0.04) 0%,
+      transparent 60%
+    );
+    background-attachment: fixed;
+  }
+
+  :root:has(:hover) .glow-container::after,
+  :root:has(:hover) nav .glass::after,
+  :root:has(:hover) footer .glass::after {
+    opacity: 1;
+  }
+}

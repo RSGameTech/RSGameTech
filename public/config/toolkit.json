@@ -1,0 +1,62 @@
+{
+  "title": "Tech Stacks",
+  "categories": ["All", "Languages", "Frameworks", "Databases", "Tools"],
+  "items": [
+    {
+      "name": "JavaScript",
+      "slug": "javascript",
+      "category": "Languages",
+      "tint": "48 96% 53%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "Nix",
+      "slug": "nixos",
+      "category": "Languages",
+      "tint": "220 48% 54%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "TypeScript",
+      "slug": "typescript",
+      "category": "Languages",
+      "tint": "211 60% 48%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "Node.js",
+      "slug": "nodedotjs",
+      "category": "Frameworks",
+      "tint": "120 25% 45%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "React",
+      "slug": "react",
+      "category": "Frameworks",
+      "tint": "193 95% 68%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "Supabase",
+      "slug": "supabase",
+      "category": "Databases",
+      "tint": "153 60% 53%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "Git",
+      "slug": "git",
+      "category": "Tools",
+      "tint": "10 80% 50%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "Linux",
+      "slug": "linux",
+      "category": "Tools",
+      "tint": "48 80% 50%",
+      "iconLib": "simple"
+    }
+  ]
+}

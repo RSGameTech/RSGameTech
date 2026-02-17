@@ -1,0 +1,31 @@
+{
+  "timezone": "Asia/Kolkata",
+  "timezoneLabel": "IST (UTC+5:30)",
+  "licence": {
+    "title": "Licence",
+    "body": "This portfolio is open-source under the MIT License. Feel free to fork and customize it for your own use."
+  },
+  "socials": {
+    "title": "Connect with Me",
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/RSGameTech",
+        "icon": "github",
+        "iconLib": "simple"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/ritam0604/",
+        "icon": "linkedin",
+        "iconLib": "lucide"
+      },
+      {
+        "label": "Twitter",
+        "url": "https://twitter.com",
+        "icon": "x",
+        "iconLib": "simple"
+      }
+    ]
+  }
+}

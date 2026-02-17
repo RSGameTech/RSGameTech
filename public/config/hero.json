@@ -1,0 +1,22 @@
+{
+  "name": "RSGameTech",
+  "tagline": "Building Digital Experiences",
+  "role": "Full-Stack Developer & Game Enthusiast",
+  "socials": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/RSGameTech",
+      "icon": "github"
+    },
+    {
+      "label": "X (Twitter)",
+      "url": "https://twitter.com",
+      "icon": "x"
+    },
+    {
+      "label": "Discord",
+      "url": "https://discord.com",
+      "icon": "discord"
+    }
+  ]
+}
