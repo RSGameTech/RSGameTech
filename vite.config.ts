@@ -15,7 +15,7 @@ function mdxPlugin() {
 
       // Extract YAML frontmatter (support LF and CRLF line endings)
       const frontmatterMatch = code.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
-      let frontmatter: Record<string, unknown> = {};
+      const frontmatter: Record<string, unknown> = {};
 
       if (frontmatterMatch) {
         const yamlStr = frontmatterMatch[1];

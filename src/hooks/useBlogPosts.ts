@@ -7,11 +7,13 @@ export interface BlogPost {
   description: string;
   tags: string[];
   featuredImage?: string;
-  component: ComponentType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component: ComponentType<{ components?: Record<string, any> }>;
 }
 
 interface MDXExports {
-  default: ComponentType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  default: ComponentType<{ components?: Record<string, any> }>;
   frontmatter?: {
     title?: string;
     date?: string;
