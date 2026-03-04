@@ -1,0 +1,62 @@
+---
+title: Welcome to My Blog
+date: 2026-03-02
+description: This is the first post on my new blog. Learn about responsive images, MDX, and modern web development.
+tags: ["welcome", "blog", "react", "ayaka"]
+featuredImage: /images/blogs/ayaka-sword.png
+---
+
+This is the first blog post on my new website. I'm excited to share my thoughts on web development, design patterns, and the latest technologies.
+
+## What You'll Find Here
+
+- **Web Development** - Tips and tricks for building fast, responsive websites
+- **Design Patterns** - Best practices for scalable React applications
+- **Technology Updates** - Insights into new tools and frameworks
+
+## Featured Image Example
+
+Here's an example of how featured images are displayed responsively:
+
+![Welcome to my blog](/images/blogs/ayaka-sword.png)
+
+## This Post Includes
+
+This blog system features:
+
+1. **Responsive Images** - Images are automatically optimized across different screen sizes
+2. **MDX Support** - Write posts using Markdown with embedded React components
+3. **Automatic Cache Busting** - Images are hashed for efficient caching
+4. **Tags & Metadata** - Organize and categorize your posts
+
+## Creating Sample Images
+
+To add your own images:
+
+1. Save image files to `public/images/blogs/` (PNG, JPG, SVG, WebP)
+2. Reference in frontmatter: `featuredImage: /images/blogs/your-image.jpg`
+3. Inline markdown: `![Alt text](/images/blogs/your-image.jpg)`
+4. Images are automatically:
+   - Optimized to multiple sizes (480px, 768px, 1200px)
+   - Given unique hashes for cache busting
+   - Lazy-loaded for performance
+   - Made responsive with srcset
+
+## Code Example
+
+You can embed React components or code blocks directly in your MDX posts:
+
+```tsx
+export default function BlogExample() {
+  return <div className="prose prose-invert">Hello from MDX!</div>;
+}
+```
+
+## Next Steps
+
+- Add more blog posts to the `src/content/blogs/` folder (as `.mdx` files)
+- Add featured images to `public/images/blogs/`
+- The responsive image generation runs automatically before build
+- Images are hashed for cache busting
+
+Thanks for reading, and stay tuned for more posts!

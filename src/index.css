@@ -326,6 +326,26 @@
   [data-theme="catppuccin-latte"] .invert-icon {
     filter: brightness(0);
   }
+
+  /* Automatically map Tailwind Typography colors to internal theme variables */
+  .prose {
+    --tw-prose-body: hsl(var(--foreground));
+    --tw-prose-headings: hsl(var(--foreground));
+    --tw-prose-lead: hsl(var(--muted-foreground));
+    --tw-prose-links: hsl(var(--primary));
+    --tw-prose-bold: hsl(var(--foreground));
+    --tw-prose-counters: hsl(var(--muted-foreground));
+    --tw-prose-bullets: hsl(var(--primary));
+    --tw-prose-hr: hsl(var(--border));
+    --tw-prose-quotes: hsl(var(--foreground));
+    --tw-prose-quote-borders: hsl(var(--primary));
+    --tw-prose-captions: hsl(var(--muted-foreground));
+    --tw-prose-code: hsl(var(--foreground));
+    --tw-prose-pre-code: hsl(var(--foreground));
+    --tw-prose-pre-bg: hsl(var(--card));
+    --tw-prose-th-borders: hsl(var(--border));
+    --tw-prose-td-borders: hsl(var(--border));
+  }
 }
 
 @layer utilities {
@@ -349,6 +369,17 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid hsl(var(--glass-inner-border));
+  }
+
+  /* Style for inline code blocks (single backtick) in markdown */
+  .prose :not(pre) > code {
+    @apply bg-muted/50 text-primary px-1.5 py-0.5 rounded-md font-mono text-[0.875em] border border-border/50;
+  }
+  
+  /* Remove Tailwind Typography's default pseudo-element backticks */
+  .prose :not(pre) > code::before,
+  .prose :not(pre) > code::after {
+    content: none !important;
   }
 }
 

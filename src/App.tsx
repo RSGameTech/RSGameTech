@@ -8,6 +8,8 @@ import { lazy, Suspense } from "react";
 const Index = lazy(() => import("./pages/Index"));
 const Links = lazy(() => import("./pages/Links"));
 const Projects = lazy(() => import("./pages/Projects"));
+const Blogs = lazy(() => import("./pages/Blogs"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -20,6 +22,7 @@ const LoadingFallback = () => (
 
 const App = () => {
   const isLinksSubdomain = window.location.hostname.startsWith("links.");
+  const isBlogsSubdomain = window.location.hostname.startsWith("blogs.");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -29,9 +32,11 @@ const App = () => {
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
-              <Route path="/" element={isLinksSubdomain ? <Links /> : <Index />} />
+              <Route path="/" element={isLinksSubdomain ? <Links /> : isBlogsSubdomain ? <Blogs /> : <Index />} />
               <Route path="/links" element={<Links />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/blogs" element={<Blogs />} />
+              <Route path="/blogs/:slug" element={<BlogPost />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
