@@ -52,9 +52,9 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
       {showLinks && config.links.length > 0 && (
         <div className="hidden sm:flex fixed top-4 left-4 z-50 items-center gap-3">
           {config.links.map((link) => {
-            const isSubdomain = window.location.hostname.startsWith("links.");
-            const href = isSubdomain && link.href.startsWith("/") 
-              ? `https://rsgametech.me${link.href}` 
+            const isSubdomain = window.location.hostname !== "rsgametech.me" && window.location.hostname !== "localhost";
+            const href = isSubdomain && link.href.startsWith("/")
+              ? `https://rsgametech.me${link.href}`
               : link.href;
 
             return (

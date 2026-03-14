@@ -1,0 +1,18 @@
+{
+  "rewrites": [
+    {
+      "source": "/:path((?!assets/).*)",
+      "has": [{ "type": "host", "value": "links.rsgametech.me" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:path((?!assets/).*)",
+      "has": [{ "type": "host", "value": "blogs.rsgametech.me" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
