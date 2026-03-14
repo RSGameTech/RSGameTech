@@ -52,6 +52,20 @@
       "iconLib": "simple"
     },
     {
+      "name": "Kotlin",
+      "slug": "kotlin",
+      "category": "Languages",
+      "tint": "267 84% 81%",
+      "iconLib": "simple"
+    },
+    {
+      "name": "Next.js",
+      "slug": "next.js",
+      "category": "Frameworks",
+      "tint": "210 20% 90%",
+      "iconLib": "simple"
+    },
+    {
       "name": "Linux",
       "slug": "linux",
       "category": "Tools",

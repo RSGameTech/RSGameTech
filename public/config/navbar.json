@@ -1,6 +1,3 @@
 {
-  "links": [
-    { "label": "Projects", "href": "/projects" },
-    { "label": "Blogs", "href": "/blogs" }
-  ]
+  "links": [{ "label": "Projects", "href": "/projects" }]
 }
