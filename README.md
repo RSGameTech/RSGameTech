@@ -22,7 +22,7 @@ BCA student · Kerala, India · 21
 ![JavaScript](https://img.shields.io/badge/JavaScript-0d1117?style=flat-square&logo=javascript&logoColor=4BCADD)
 ![Kotlin](https://img.shields.io/badge/Kotlin-0d1117?style=flat-square&logo=kotlin&logoColor=4BCADD)
 ![HTML](https://img.shields.io/badge/HTML-0d1117?style=flat-square&logo=html5&logoColor=4BCADD)
-![CSS](https://img.shields.io/badge/CSS-0d1117?style=flat-square&logo=css3&logoColor=4BCADD)
+![CSS](https://img.shields.io/badge/CSS-0d1117?style=flat-square&logo=css&logoColor=4BCADD)
 ![Bash](https://img.shields.io/badge/Bash-0d1117?style=flat-square&logo=gnubash&logoColor=4BCADD)
 ![Linux](https://img.shields.io/badge/Linux-0d1117?style=flat-square&logo=linux&logoColor=4BCADD)
 ![Android](https://img.shields.io/badge/Jetpack+Compose-0d1117?style=flat-square&logo=android&logoColor=4BCADD)
