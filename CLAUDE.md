@@ -21,11 +21,12 @@ This is a **personal portfolio website** built with React 18 + TypeScript + Vite
 
 ### Stack
 
-- **Vite** with React SWC plugin and a custom MDX plugin (in `vite.config.ts`) that extracts YAML frontmatter from `.mdx` files
+- **Vite 7** with React SWC plugin and a custom MDX plugin (in `vite.config.ts`) that extracts YAML frontmatter from `.mdx` files
 - **Tailwind CSS 3** with shadcn/ui (Radix UI primitives) — configured via `components.json`, components live in `src/components/ui/`
 - **React Router v6** with lazy-loaded pages and subdomain routing (`links.rsgametech.me`, `blogs.rsgametech.me`)
 - **TanStack React Query** for async state management
 - **Framer Motion** for scroll-reveal animations
+- **Vitest** with jsdom for testing, **sharp** for image optimization
 
 ### Path Alias
 
@@ -65,6 +66,17 @@ Content is managed through JSON files in `public/config/` rather than hardcoded.
 ### Page Structure Convention
 
 Every page follows: `DotGridBackground` (fixed) → `Navbar` (fixed) → `main` (max-w-4xl centered, pt-[70px]) → `FooterSection`.
+
+### Build Optimization
+
+Manual chunk splitting in `vite.config.ts` via `rollupOptions.output.manualChunks`:
+- `vendor-react` — react, react-dom, react-router-dom
+- `vendor-ui` — all Radix UI primitives, CVA, clsx, tailwind-merge, framer-motion, lucide-react
+- `vendor-utils` — date-fns, zod, react-hook-form
+
+### Deployment
+
+Deployed to **Vercel** (configured via `vercel.json`). Subdomain routing handled in `App.tsx` — `links.*` serves Links page, `blogs.*` serves Blogs page at root `/`.
 
 ### TypeScript Config
 

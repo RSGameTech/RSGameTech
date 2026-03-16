@@ -1,1 +1,0 @@
-{ "label": "Blogs", "href": "/blogs" }
