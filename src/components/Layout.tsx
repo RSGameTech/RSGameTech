@@ -21,7 +21,7 @@ const Layout = ({ showNavLinks = true }: LayoutProps) => {
     <>
       <AmbientOrbs />
       <Navbar showLinks={showNavLinks} />
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <PageTransition key={location.pathname}>
           <Outlet />
         </PageTransition>
