@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { compile } from "@mdx-js/mdx";
 import { readFileSync } from "fs";
@@ -63,6 +63,8 @@ export const frontmatter = ${JSON.stringify(frontmatter)};
         return {
           code: output,
           map: null,
+          // Tell Rolldown (Vite 8) this transform outputs JavaScript
+          moduleType: "js",
         };
       } catch (error) {
         console.error("MDX compilation error in", id, ":", error);
@@ -88,12 +90,26 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-ui": ["@radix-ui/react-dropdown-menu", "@radix-ui/react-separator", "@radix-ui/react-slot", "@radix-ui/react-toast", "@radix-ui/react-toggle", "@radix-ui/react-toggle-group", "@radix-ui/react-tooltip", "class-variance-authority", "clsx", "tailwind-merge", "framer-motion", "lucide-react"],
-          "vendor-utils": ["date-fns", "zod"],
+        codeSplitting: {
+          groups: [
+            {
+              name: "vendor-react",
+              test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,
+              priority: 30,
+            },
+            {
+              name: "vendor-ui",
+              test: /[\\/]node_modules[\\/](@radix-ui|class-variance-authority|clsx|tailwind-merge|framer-motion|lucide-react)[\\/]/,
+              priority: 20,
+            },
+            {
+              name: "vendor-utils",
+              test: /[\\/]node_modules[\\/](date-fns|zod)[\\/]/,
+              priority: 10,
+            },
+          ],
         },
       },
     },
