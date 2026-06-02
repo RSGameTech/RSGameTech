@@ -10,7 +10,7 @@
 
 Network Voice Engineer by day. Building Discord bots, Android apps, and web things on the side.
 
-BCA student · Kerala, India · 21
+BCA student · Kerala, India · 22
 
 ---
 
@@ -33,8 +33,8 @@ BCA student · Kerala, India · 21
 
 ### `> currently_building`
 
-| Project | Stack | Status |
-|---|---|---|
+| Project                           | Stack                                | Status    |
+| --------------------------------- | ------------------------------------ | --------- |
 | **Element** — modular Discord bot | discord.js v14 · TypeScript · SQLite | 🔨 active |
 
 ---

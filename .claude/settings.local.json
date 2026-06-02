@@ -40,7 +40,8 @@
       "Bash(del *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({'scripts': d.get\\('scripts',{}\\), 'dependencies': list\\(d.get\\('dependencies',{}\\).keys\\(\\)\\)[:10]}, indent=2\\)\\)\")"
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({'scripts': d.get\\('scripts',{}\\), 'dependencies': list\\(d.get\\('dependencies',{}\\).keys\\(\\)\\)[:10]}, indent=2\\)\\)\")",
+      "Bash(git push *)"
     ]
   }
 }

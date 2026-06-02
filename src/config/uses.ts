@@ -47,9 +47,9 @@ const uses: UsesConfig = {
       specs: {
         OS: "Windows 11 / Arch Linux",
         CPU: "Intel Core i5-12450HX",
-        GPU: "NVIDIA RTX 2050",
+        GPU: "NVIDIA RTX 3050 6 GB",
         RAM: "16 GB DDR5",
-        Storage: "512 GB NVMe SSD",
+        Storage: "1 TB + 512 GB NVMe SSD",
       },
     },
     {
@@ -59,7 +59,7 @@ const uses: UsesConfig = {
         OS: "Hyper OS 3 | Android 16",
         Chipset: "Snapdragon 8 Elite",
         RAM: "12 GB LPDDR5X",
-        Storage: "256 GB UFS 4.0",
+        Storage: "512 GB UFS 4.0",
       },
     },
   ],
@@ -67,37 +67,31 @@ const uses: UsesConfig = {
     {
       title: "Hardware",
       items: [
-        { name: "CMF Watch Pro",        note: "Watch",                                icon: "Watch",      iconLib: "lucide" },
-        { name: "Kreo Swarm 75",        note: "Mechanical keyboard",                  icon: "Keyboard",   iconLib: "lucide" },
-        { name: "Kreo Chimera V2",      note: "Precision input",                      icon: "Mouse",      iconLib: "lucide" },
-        { name: "KZ EDX Pro",           note: "IEM",                                  icon: "Headphones", iconLib: "lucide" },
-        { name: "MoonDrop Space Travel 2", note: "TWS",                               icon: "Headphones", iconLib: "lucide" },
+        { name: "CMF Watch Pro", note: "Watch", icon: "Watch", iconLib: "lucide" },
+        { name: "Kreo Swarm 75", note: "Mechanical keyboard", icon: "Keyboard", iconLib: "lucide" },
+        { name: "Kreo Chimera V2", note: "Precision input", icon: "Mouse", iconLib: "lucide" },
+        { name: "KZ EDX Pro", note: "IEM", icon: "Headphones", iconLib: "lucide" },
+        { name: "MoonDrop Space Travel 2", note: "TWS", icon: "Headphones", iconLib: "lucide" },
       ],
     },
     {
       title: "Software",
       items: [
-        { name: "Brave", note: "Browser", icon: "brave",      iconLib: "simple", tint: "12 96% 58%" },
-        { name: "Zen",   note: "Browser", icon: "zenbrowser", iconLib: "simple", tint: "10 91% 65%" },
+        { name: "Brave", note: "Browser", icon: "brave", iconLib: "simple", tint: "12 96% 58%" },
+        { name: "Zen", note: "Browser", icon: "zenbrowser", iconLib: "simple", tint: "10 91% 65%" },
       ],
     },
     {
       title: "Code Editor & IDE",
-      items: [
-        { name: "VS Code", note: "Primary editor for all web projects", icon: "visualstudiocode", iconLib: "simple", tint: "210 100% 50%" },
-      ],
+      items: [{ name: "VS Code", note: "Primary editor for all web projects", icon: "visualstudiocode", iconLib: "simple", tint: "210 100% 50%" }],
     },
     {
       title: "Terminal & CLI",
-      items: [
-        { name: "Claude Code", note: "AI-powered development in the terminal", icon: "claude", iconLib: "simple", tint: "25 80% 55%" },
-      ],
+      items: [{ name: "Claude Code", note: "AI-powered development in the terminal", icon: "claude", iconLib: "simple", tint: "25 80% 55%" }],
     },
     {
       title: "Design & Creative",
-      items: [
-        { name: "Figma", note: "UI design and prototyping", icon: "figma", iconLib: "simple", tint: "260 90% 65%" },
-      ],
+      items: [{ name: "Figma", note: "UI design and prototyping", icon: "figma", iconLib: "simple", tint: "260 90% 65%" }],
     },
   ],
 };
