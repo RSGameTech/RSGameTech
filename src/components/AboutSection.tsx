@@ -5,6 +5,9 @@ import { revealVariants, staggerContainer } from "@/hooks/useScrollReveal";
 import config from "@/config/about";
 import AboutContent from "@/content/about.mdx";
 
+// Set to true once the correct stats data is ready
+const SHOW_ABOUT_STATS = false;
+
 const AboutSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -49,26 +52,28 @@ const AboutSection = () => {
             }>
             <AboutContent />
           </div>
-          <div className="flex gap-3 mt-2">
-            {config.stats.map((s) => (
-              <div
-                key={s.label}
-                className="flex-1 flex flex-col items-center gap-1 rounded-xl py-3 px-2"
-                style={{
-                  background: "var(--glass)",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
-                  border: "1px solid var(--glass-border)",
-                }}>
-                <span className="font-bold text-2xl" style={{ color: "var(--accent-purple)" }}>
-                  {s.num}
-                </span>
-                <span className="text-xs text-center leading-tight" style={{ color: "var(--text-dim)", fontFamily: "var(--mono)" }}>
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
+          {SHOW_ABOUT_STATS && (
+            <div className="flex gap-3 mt-2">
+              {config.stats.map((s) => (
+                <div
+                  key={s.label}
+                  className="flex-1 flex flex-col items-center gap-1 rounded-xl py-3 px-2"
+                  style={{
+                    background: "var(--glass)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    border: "1px solid var(--glass-border)",
+                  }}>
+                  <span className="font-bold text-2xl" style={{ color: "var(--accent-purple)" }}>
+                    {s.num}
+                  </span>
+                  <span className="text-xs text-center leading-tight" style={{ color: "var(--text-dim)", fontFamily: "var(--mono)" }}>
+                    {s.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </motion.div>
       </motion.div>
     </section>
