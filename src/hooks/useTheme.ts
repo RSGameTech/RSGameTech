@@ -1,25 +1,17 @@
 import { useEffect, useState } from "react";
 
+export type ThemeId = "dark" | "light";
+
 export const THEMES = [
-  { id: "dark-minimal", label: "Dark Minimal", type: "dark" },
-  { id: "minimal-light", label: "Light Minimal", type: "light" },
-  { id: "nord", label: "Nord", type: "dark" },
-  { id: "solarized", label: "Solarized", type: "dark" },
-  { id: "catppuccin-latte", label: "Catppuccin Latte", type: "light" },
-  { id: "catppuccin-frappe", label: "Catppuccin Frappé", type: "dark" },
-  { id: "catppuccin-macchiato", label: "Catppuccin Macchiato", type: "dark" },
-  { id: "catppuccin-mocha", label: "Catppuccin Mocha", type: "dark" },
+  { id: "dark" as ThemeId, label: "Dark", type: "dark" },
+  { id: "light" as ThemeId, label: "Light", type: "light" },
 ] as const;
 
-export type ThemeId = (typeof THEMES)[number]["id"];
-
 function getInitialTheme(): ThemeId {
-  const saved = localStorage.getItem("portfolio-theme") as ThemeId | null;
-  if (saved && THEMES.some((t) => t.id === saved)) return saved;
-
-  // First visit: sync with OS preference
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  return prefersDark ? "dark-minimal" : "minimal-light";
+  const saved = localStorage.getItem("portfolio-theme");
+  if (saved === "dark" || saved === "light") return saved;
+  // Unknown / old value → fall back to OS preference
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 export function useTheme() {

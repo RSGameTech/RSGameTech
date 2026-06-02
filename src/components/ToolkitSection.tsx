@@ -1,9 +1,8 @@
-import { useConfig } from "@/hooks/useConfig";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { hslToHex } from "@/lib/utils";
+import TiltCard from "@/components/TiltCard";
+import config from "@/config/toolkit";
+import { motion, useInView } from "framer-motion";
 import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import {
   Code,
@@ -18,7 +17,6 @@ import {
   type LucideIcon as LucideIconType,
 } from "lucide-react";
 
-// Map of allowed icons to enable tree-shaking
 const iconMap: Record<string, LucideIconType> = {
   code: Code,
   terminal: Terminal,
@@ -31,140 +29,266 @@ const iconMap: Record<string, LucideIconType> = {
   cloud: Cloud,
 };
 
-interface ToolkitItem {
-  name: string;
-  slug: string;
-  category: string;
-  tint: string;
-  iconLib?: "simple" | "lucide";
-}
-
-interface ToolkitConfig {
-  title?: string;
-  categories: string[];
-  items: ToolkitItem[];
-}
-
-function hslToHex(hsl: string): string {
-  const parts = hsl.split(/\s+/);
-  const h = parseFloat(parts[0]) || 0;
-  const s = (parseFloat(parts[1]) || 0) / 100;
-  const l = (parseFloat(parts[2]) || 0) / 100;
-  const a = s * Math.min(l, 1 - l);
-  const f = (n: number) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, "0");
-  };
-  return `${f(0)}${f(8)}${f(4)}`;
-}
-
 function LucideIcon({ name, className, style }: { name: string; className?: string; style?: React.CSSProperties }) {
   const normalizedName = name.toLowerCase().replace(/[-_\s]/g, "");
-  // Find key that matches normalized name
   const key = Object.keys(iconMap).find(
     (k) => k.toLowerCase().replace(/[-_\s]/g, "") === normalizedName
   );
-  
   if (!key) return <div className={className} style={{ ...style, width: 32, height: 32 }} />;
   const Icon = iconMap[key];
   return <Icon className={className} style={style} size={32} />;
 }
 
-const ToolkitSection = () => {
-  const { data: config, isLoading } = useConfig<ToolkitConfig>("/config/toolkit.json", {
-    title: "Tech Stacks",
-    categories: ["All"],
-    items: [],
-  });
-  const [active, setActive] = useState("All");
+// Reads the real-time translateX from the browser's computed style matrix (works mid-animation).
+function getTranslateX(el: HTMLElement): number {
+  const t = getComputedStyle(el).transform;
+  if (!t || t === "none") return 0;
+  return new DOMMatrix(t).m41;
+}
 
-  const filtered = active === "All" ? config.items : config.items.filter((i) => i.category === active);
+type ToolkitItem = typeof config.items[0];
 
-  if (isLoading) {
-    return (
-      <section>
-        <Card className="glass rounded-xl glow-container border-0 p-6">
-          <Skeleton className="h-8 w-48 mb-6" />
-          <div className="flex gap-2 mb-6">
-             <Skeleton className="h-8 w-16 rounded-full" />
-             <Skeleton className="h-8 w-16 rounded-full" />
-             <Skeleton className="h-8 w-16 rounded-full" />
-          </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
-             {Array.from({ length: 12 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full rounded-lg" />
-             ))}
-          </div>
-        </Card>
-      </section>
-    );
-  }
+function MarqueeTile({ item }: { item: ToolkitItem }) {
+  return (
+    <div style={{ flexShrink: 0 }} className="w-[120px] md:w-[128px] aspect-[4/3]">
+      <TiltCard
+        className="tech-tile rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-full cursor-default"
+        style={{ "--tile-tint": item.tint } as React.CSSProperties}
+      >
+        {item.iconLib === "lucide" ? (
+          <LucideIcon
+            name={item.slug}
+            className="tile-icon w-8 h-8"
+            style={{ color: `hsl(${item.tint})` }}
+          />
+        ) : (
+          <img
+            src={`https://cdn.simpleicons.org/${item.slug}/${hslToHex(item.tint)}`}
+            alt={item.name}
+            className="tile-icon w-8 h-8"
+            draggable={false}
+            loading="lazy"
+          />
+        )}
+        <span className="text-xs font-medium text-foreground text-center leading-tight">
+          {item.name}
+        </span>
+      </TiltCard>
+    </div>
+  );
+}
+
+function MarqueeRow({
+  items,
+  direction,
+  duration = 25,
+}: {
+  items: ToolkitItem[];
+  direction: "left" | "right";
+  duration?: number;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  // All mutable drag state in one ref — no re-renders triggered
+  const drag = useRef({ active: false, startX: 0, startTX: 0, halfWidth: 0 });
+  const isHovered = useRef(false);
+
+  const animName = direction === "left" ? "marquee-left" : "marquee-right";
+  // Full animation shorthand used both at mount and when restoring after drag
+  const buildAnim = (delaySec: number) =>
+    `${animName} ${duration}s linear ${delaySec}s infinite`;
+
+  useEffect(() => {
+    const move = (clientX: number) => {
+      if (!drag.current.active || !trackRef.current) return;
+      const { startX, startTX, halfWidth } = drag.current;
+      let newX = startTX + (clientX - startX);
+      // Wrap to stay inside the valid loop window [-halfWidth, 0)
+      if (halfWidth > 0) {
+        newX = ((newX % halfWidth) + halfWidth) % halfWidth - halfWidth;
+      }
+      trackRef.current.style.transform = `translateX(${newX}px)`;
+    };
+
+    const end = () => {
+      if (!drag.current.active || !trackRef.current) return;
+      const el = trackRef.current;
+      drag.current.active = false;
+      document.body.style.cursor = "";
+
+      const currentX = getTranslateX(el);
+      const { halfWidth } = drag.current;
+
+      if (halfWidth === 0) {
+        el.style.animation = buildAnim(0);
+        el.style.transform = "";
+        return;
+      }
+
+      // Normalise into [-halfWidth, 0) → one full loop cycle
+      let norm = currentX % halfWidth;
+      if (norm > 0) norm -= halfWidth;
+
+      const progress = Math.abs(norm) / halfWidth;
+      // Negative delay makes the animation start partway through
+      const delay =
+        direction === "left"
+          ? -(progress * duration)
+          : -((1 - progress) * duration);
+
+      // Restore animation at the exact release position, clear inline transform
+      el.style.animation = buildAnim(delay);
+      el.style.transform = "";
+
+      // Re-apply hover-pause if the pointer never left while dragging
+      if (isHovered.current) {
+        el.style.animationPlayState = "paused";
+      }
+    };
+
+    const onMouseMove = (e: MouseEvent) => move(e.clientX);
+    const onTouchMove = (e: TouchEvent) => move(e.touches[0].clientX);
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", end);
+    document.addEventListener("touchmove", onTouchMove);
+    document.addEventListener("touchend", end);
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", end);
+      document.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("touchend", end);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [direction, duration]);
+
+  const startDrag = (clientX: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    // Read the live animated position BEFORE disabling the animation
+    const currentTX = getTranslateX(el);
+    drag.current = {
+      active: true,
+      startX: clientX,
+      startTX: currentTX,
+      halfWidth: el.scrollWidth / 2,
+    };
+    // Setting animation:"none" lets our inline transform take full control —
+    // simply pausing still leaves the animation origin overriding the inline value.
+    el.style.animation = "none";
+    el.style.transform = `translateX(${currentTX}px)`;
+    document.body.style.cursor = "grabbing";
+  };
+
+  // Hover-pause is JS-driven because the JSX inline `animation` shorthand
+  // bakes in animation-play-state:running, making a CSS :hover rule ineffective.
+  const handleMouseEnter = () => {
+    isHovered.current = true;
+    if (!drag.current.active && trackRef.current) {
+      trackRef.current.style.animationPlayState = "paused";
+    }
+  };
+
+  const handleMouseLeave = () => {
+    isHovered.current = false;
+    if (!drag.current.active && trackRef.current) {
+      trackRef.current.style.animationPlayState = "running";
+    }
+  };
+
+  const track = [...items, ...items];
 
   return (
-    <section>
-      <Card className="glass rounded-xl glow-container border-0">
-        <CardHeader>
-          <h2 className="text-2xl font-bold text-foreground">{config.title || "Tech Stacks"}</h2>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <ToggleGroup
-            type="single"
-            value={active}
-            onValueChange={(val) => val && setActive(val)}
-            className="flex gap-2 flex-wrap justify-start"
-          >
-            {config.categories.map((cat) => (
-              <ToggleGroupItem
-                key={cat}
-                value={cat}
-                className="px-4 py-1.5 rounded-full text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground glass-inner text-muted-foreground hover:text-foreground"
-              >
-                {cat}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+    <div
+      className="marquee-container relative overflow-hidden select-none cursor-grab"
+      style={{
+        maskImage:
+          "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
+      }}
+      onMouseDown={(e) => startDrag(e.clientX)}
+      onTouchStart={(e) => startDrag(e.touches[0].clientX)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Left edge blur */}
+      <div
+        className="absolute inset-y-0 left-0 z-10 w-24 pointer-events-none"
+        style={{
+          backdropFilter: "blur(5px)",
+          WebkitBackdropFilter: "blur(5px)",
+          maskImage: "linear-gradient(to right, black 0%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to right, black 0%, transparent 100%)",
+        }}
+      />
+      {/* Right edge blur */}
+      <div
+        className="absolute inset-y-0 right-0 z-10 w-24 pointer-events-none"
+        style={{
+          backdropFilter: "blur(5px)",
+          WebkitBackdropFilter: "blur(5px)",
+          maskImage: "linear-gradient(to left, black 0%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to left, black 0%, transparent 100%)",
+        }}
+      />
 
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            key={active}
-            className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3"
+      <div
+        ref={trackRef}
+        className="marquee-track flex"
+        style={{ animation: buildAnim(0), gap: "12px", width: "max-content" }}
+      >
+        {track.map((item, i) => (
+          <MarqueeTile key={`${item.slug}-${i}`} item={item} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const ToolkitSection = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+
+  const items = config.items;
+  const topItems = items.filter((_, i) => i % 2 === 0);
+  const bottomItems = items.filter((_, i) => i % 2 !== 0);
+
+  return (
+    <section id="toolkit" className="w-full flex flex-col justify-center relative py-5">
+      <motion.div
+        ref={ref}
+        variants={staggerContainer}
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        className="flex flex-col gap-5"
+      >
+        <motion.div variants={revealVariants}>
+          <h2
+            className="font-bold"
+            style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
           >
-            {filtered.map((item) => (
-              <motion.div
-                key={item.slug}
-                variants={revealVariants}
-                className="rounded-lg p-4 flex flex-col items-center gap-2.5 transition-all desktop:hover:scale-105 border"
-                style={{
-                  backgroundColor: `hsla(${item.tint} / 0.1)`,
-                  borderColor: `hsla(${item.tint} / 0.15)`,
-                  boxShadow: `0 0 12px -4px hsla(${item.tint} / 0.2)`,
-                }}
-              >
-                {item.iconLib === "lucide" ? (
-                  <LucideIcon
-                    name={item.slug}
-                    className="w-8 h-8"
-                    style={{ color: `hsl(${item.tint})` }}
-                  />
-                ) : (
-                  <img
-                    src={`https://cdn.simpleicons.org/${item.slug}/${hslToHex(item.tint)}`}
-                    alt={item.name}
-                    className="w-8 h-8"
-                    loading="lazy"
-                  />
-                )}
-                <span className="text-xs font-medium text-foreground text-center leading-tight">
-                  {item.name}
-                </span>
-              </motion.div>
-            ))}
-          </motion.div>
-        </CardContent>
-      </Card>
+            {config.heading || "Tech Stacks"}
+          </h2>
+          {config.subheading && (
+            <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
+              {config.subheading}
+            </p>
+          )}
+        </motion.div>
+
+        <motion.div variants={revealVariants}>
+          {/* Desktop: single row */}
+          <div className="hidden md:block">
+            <MarqueeRow items={items} direction="left" duration={25} />
+          </div>
+
+          {/* Mobile: two rows, opposite directions */}
+          <div className="md:hidden flex flex-col gap-3">
+            <MarqueeRow items={topItems} direction="left" duration={20} />
+            <MarqueeRow items={bottomItems} direction="right" duration={25} />
+          </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

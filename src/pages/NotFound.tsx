@@ -1,7 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import FooterSection from "@/components/FooterSection";
 
 const NotFound = () => {
   const location = useLocation();
@@ -11,17 +10,37 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <Card className="glass rounded-xl glow-container border-0">
-        <CardContent className="text-center p-8 space-y-4">
-          <h1 className="text-4xl font-bold text-foreground">404</h1>
-          <p className="text-xl text-muted-foreground">Oops! Page not found</p>
-          <Button asChild>
-            <a href="/">Return to Home</a>
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+    <main className="flex flex-col w-full max-w-4xl mx-auto px-4 min-h-screen pt-[90px]">
+      <div className="flex-1 flex items-center justify-center">
+        <div
+          className="rounded-2xl p-10 flex flex-col items-center gap-4 text-center"
+          style={{
+            background: "var(--glass)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            border: "1px solid var(--glass-border)",
+          }}
+        >
+          <h1
+            className="font-bold"
+            style={{ fontSize: 72, letterSpacing: "-4px", color: "var(--text-color)", lineHeight: 1 }}
+          >
+            404
+          </h1>
+          <p className="text-base font-medium" style={{ color: "var(--text-muted)" }}>
+            Oops! Page not found.
+          </p>
+          <Link
+            to="/"
+            className="mt-2 inline-flex items-center rounded-full px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+            style={{ background: "var(--accent-purple)" }}
+          >
+            Return to Home
+          </Link>
+        </div>
+      </div>
+      <FooterSection />
+    </main>
   );
 };
 

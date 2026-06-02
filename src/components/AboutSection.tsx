@@ -1,61 +1,76 @@
-import { useMarkdown } from "@/hooks/useConfig";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
+import { revealVariants, staggerContainer } from "@/hooks/useScrollReveal";
+import config from "@/config/about";
+import AboutContent from "@/content/about.mdx";
 
 const AboutSection = () => {
-  const { content: md, isLoading } = useMarkdown("/content/about.md");
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
-  const blocks = md ? md.split("\n\n").filter(Boolean) : [];
-
-  if (isLoading) {
-    return (
-      <section>
-        <Card className="glass rounded-xl glow-container border-0 p-6 space-y-4">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </Card>
-      </section>
-    );
-  }
+  const photoSrc = config.photo || "/avatar-alt.jpg";
 
   return (
-    <section>
-      <Card className="glass rounded-xl glow-container border-0">
-        {blocks.length > 0 && (
-          <CardHeader>
-            {blocks[0].startsWith("# ") && (
-              <h2 className="text-2xl font-bold text-foreground">
-                {blocks[0].replace("# ", "")}
-              </h2>
-            )}
-          </CardHeader>
-        )}
-        <CardContent className="space-y-4">
-          {md ? (
-            blocks.slice(blocks[0]?.startsWith("# ") ? 1 : 0).map((block, i) => {
-              if (/^(\*{3,}|-{3,}|_{3,})$/.test(block.trim())) {
-                return <Separator key={i} className="my-4" />;
-              }
-              const parts = block.split(/(\*\*.*?\*\*)/g).map((part, j) => {
-                if (part.startsWith("**") && part.endsWith("**")) {
-                  return <strong key={j} className="text-foreground font-semibold">{part.slice(2, -2)}</strong>;
-                }
-                return part;
-              });
-              return (
-                <p key={i} className="text-muted-foreground leading-relaxed">
-                  {parts}
-                </p>
-              );
-            })
-          ) : (
-            <p className="text-muted-foreground">Loading...</p>
-          )}
-        </CardContent>
-      </Card>
+    <section id="about" className="w-full flex flex-col justify-center relative py-5">
+      <motion.div ref={ref} variants={staggerContainer} initial="hidden" animate={inView ? "visible" : "hidden"} className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-5 md:items-center">
+        {/* Photo / placeholder */}
+        <motion.div variants={revealVariants} className="relative mx-auto flex-shrink-0 self-center" style={{ width: 304, height: 304 }}>
+          {/* Photo — centered within the frame container */}
+          <div
+            className="absolute overflow-hidden rounded-full shadow-lg"
+            style={{
+              width: 240, height: 240,
+              top: "50%", left: "50%",
+              transform: "translate(-50%, -50%)",
+              border: "2px solid var(--glass-border)",
+            }}
+          >
+            <img src={photoSrc} alt="Ritam Sarkar" className="block h-full w-full object-cover" width={240} height={240} loading="lazy" />
+          </div>
+          {/* Frame fills the 304px container — no scale needed */}
+          <img src="/ayaka-frame.webp" alt="" className="pointer-events-none absolute inset-0 z-10 w-full h-full object-contain" />
+        </motion.div>
+
+        {/* Text + stats */}
+        <motion.div variants={revealVariants} className="flex flex-col justify-center gap-4">
+          <h2 className="font-bold" style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}>
+            {config.heading}
+          </h2>
+          <div
+            className="prose max-w-none"
+            style={
+              {
+                fontSize: 15,
+                "--tw-prose-body": "var(--text-muted)",
+                "--tw-prose-bold": "var(--text-color)",
+                "--tw-prose-links": "var(--accent-purple)",
+              } as React.CSSProperties
+            }>
+            <AboutContent />
+          </div>
+          <div className="flex gap-3 mt-2">
+            {config.stats.map((s) => (
+              <div
+                key={s.label}
+                className="flex-1 flex flex-col items-center gap-1 rounded-xl py-3 px-2"
+                style={{
+                  background: "var(--glass)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  border: "1px solid var(--glass-border)",
+                }}>
+                <span className="font-bold text-2xl" style={{ color: "var(--accent-purple)" }}>
+                  {s.num}
+                </span>
+                <span className="text-xs text-center leading-tight" style={{ color: "var(--text-dim)", fontFamily: "var(--mono)" }}>
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

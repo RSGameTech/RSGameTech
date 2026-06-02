@@ -1,57 +1,53 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
-import { useMouseGlow } from "@/hooks/useMouseGlow";
-import FooterSection from "@/components/FooterSection";
-import { ArrowUpRight, Github, ArrowLeft } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import config from "@/config/projects";
 
 const statusStyles: Record<string, { label: string; bg: string; dot: string }> = {
-  live:     { label: "Live",     bg: "rgba(34,197,94,0.12)",   dot: "#22c55e" },
-  wip:      { label: "WIP",      bg: "rgba(234,179,8,0.12)",   dot: "#eab308" },
+  live:     { label: "Live",     bg: "rgba(34,197,94,0.12)",  dot: "#22c55e" },
+  wip:      { label: "WIP",      bg: "rgba(234,179,8,0.12)",  dot: "#eab308" },
   archived: { label: "Archived", bg: "rgba(148,163,184,0.12)", dot: "#94a3b8" },
 };
 
-const Projects = () => {
-  useMouseGlow();
+const ProjectsSection = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+
+  const featured = config.items.filter((p) => p.featured);
+
+  if (featured.length === 0) return null;
+
+  const gridClass =
+    featured.length === 1
+      ? "grid grid-cols-1 gap-4 md:w-1/2"
+      : "grid grid-cols-1 md:grid-cols-2 gap-4";
 
   return (
-    <main className="flex flex-col w-full max-w-4xl mx-auto px-4 pt-[70px]">
+    <section id="projects" className="w-full flex flex-col justify-center relative py-5">
       <motion.div
+        ref={ref}
         variants={staggerContainer}
         initial="hidden"
-        animate="visible"
-        className="flex flex-col gap-8 py-10"
+        animate={inView ? "visible" : "hidden"}
+        className="flex flex-col gap-4"
       >
-        {/* Back link */}
         <motion.div variants={revealVariants}>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-sm transition-colors"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-color)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
-          >
-            <ArrowLeft size={14} /> Back to home
-          </Link>
-        </motion.div>
-
-        {/* Heading */}
-        <motion.div variants={revealVariants}>
-          <h1
+          <h2
             className="font-bold"
             style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
           >
             {config.heading}
-          </h1>
+          </h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             {config.subheading}
           </p>
         </motion.div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {config.items.map((project, i) => {
+        <div className={featured.length === 1 ? "flex justify-center" : undefined}>
+          <div className={gridClass}>
+          {featured.map((project, i) => {
             const st = project.status ? statusStyles[project.status] : null;
             return (
               <motion.div key={i} variants={revealVariants} className="h-full">
@@ -64,9 +60,8 @@ const Projects = () => {
                     border: "1px solid var(--glass-border)",
                   }}
                 >
-                  {/* Image */}
-                  <div
-                    className="relative w-full overflow-hidden aspect-[4/3] flex-shrink-0"
+                  {/* Image — 4:3 aspect ratio, zoom on hover */}
+                  <div className="relative w-full overflow-hidden aspect-[4/3] flex-shrink-0"
                     style={{
                       background: project.image
                         ? undefined
@@ -90,12 +85,7 @@ const Projects = () => {
                     {st && (
                       <div
                         className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
-                        style={{
-                          background: st.bg,
-                          backdropFilter: "blur(8px)",
-                          WebkitBackdropFilter: "blur(8px)",
-                          color: "var(--text-color)",
-                        }}
+                        style={{ background: st.bg, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "var(--text-color)" }}
                       >
                         <span className="w-1.5 h-1.5 rounded-full" style={{ background: st.dot }} />
                         {st.label}
@@ -105,12 +95,12 @@ const Projects = () => {
 
                   {/* Body */}
                   <div className="flex flex-col flex-1 gap-3 p-5">
-                    <h2
+                    <h3
                       className="font-semibold text-base leading-snug"
                       style={{ color: "var(--text-color)" }}
                     >
                       {project.title}
-                    </h2>
+                    </h3>
 
                     <p
                       className="text-sm leading-relaxed flex-1"
@@ -119,6 +109,7 @@ const Projects = () => {
                       {project.description}
                     </p>
 
+                    {/* Tags — glass rounded-rect style */}
                     {project.tags?.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {project.tags.map((tag) => (
@@ -139,10 +130,12 @@ const Projects = () => {
                       </div>
                     )}
 
-                    {project.tags?.length > 0 && (project.liveUrl || project.repoUrl) && (
+                    {/* Divider */}
+                    {(project.tags?.length > 0) && (project.liveUrl || project.repoUrl) && (
                       <div style={{ borderTop: "1px solid var(--glass-border)" }} />
                     )}
 
+                    {/* Links — pill buttons */}
                     {(project.liveUrl || project.repoUrl) && (
                       <div className="flex items-center gap-2">
                         {project.liveUrl && (
@@ -180,12 +173,35 @@ const Projects = () => {
               </motion.div>
             );
           })}
+          </div>
         </div>
+        {/* View all CTA */}
+        <motion.div variants={revealVariants}>
+          <Link
+            to="/projects"
+            className="flex items-center justify-center gap-1.5 w-full py-3 rounded-2xl text-sm font-medium transition-all duration-200"
+            style={{
+              background: "var(--glass)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: "1px solid var(--glass-border)",
+              color: "var(--text-muted)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--glass-strong)";
+              e.currentTarget.style.color = "var(--text-color)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "var(--glass)";
+              e.currentTarget.style.color = "var(--text-muted)";
+            }}
+          >
+            View all projects <ArrowUpRight size={14} />
+          </Link>
+        </motion.div>
       </motion.div>
-
-      <FooterSection />
-    </main>
+    </section>
   );
 };
 
-export default Projects;
+export default ProjectsSection;

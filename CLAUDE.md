@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+# navbar
+- **navbar** (`.claude/skills/navbar/SKILL.md`) - glassmorphism navbar with pill transition, animated active states, mega-menu, inline search, notification bell, scroll-hide. Trigger: `/navbar`
+When the user types `/navbar`, invoke the Skill tool with `skill: "navbar"` before doing anything else.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Commands

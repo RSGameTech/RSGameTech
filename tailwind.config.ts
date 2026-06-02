@@ -18,6 +18,10 @@ export default {
       screens: {
         desktop: { raw: "(hover: hover)" },
       },
+      fontFamily: {
+        sans: ['Sora', 'system-ui', 'sans-serif'],
+        mono: ['Fira Code', 'JetBrains Mono', 'SF Mono', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

@@ -3,302 +3,104 @@
 @tailwind utilities;
 
 @layer base {
-  /* Dark Minimal (default) */
+  /* Universal accent variables (available in both themes) */
+  :root {
+    --font: 'Sora', system-ui, sans-serif;
+    --mono: 'Fira Code', 'JetBrains Mono', monospace;
+    --accent-purple: oklch(0.7 0.18 270);
+    --accent-magenta: oklch(0.7 0.18 310);
+    --accent-blue: oklch(0.65 0.2 220);
+  }
+
+  /* ── Dark theme ── */
   :root,
-  [data-theme="dark-minimal"] {
-    --background: 228 15% 7%;
-    --foreground: 210 20% 90%;
+  [data-theme="dark"] {
+    /* Design raw vars */
+    --bg1: #0a0b1a;
+    --bg2: #12132a;
+    --text-color: #f0f0f5;
+    --text-muted: rgba(240, 240, 245, 0.5);
+    --text-dim: rgba(240, 240, 245, 0.3);
+    --glass: rgba(255, 255, 255, 0.09);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-strong: rgba(255, 255, 255, 0.18);
+    --nav-bg: rgba(15, 16, 40, 0.65);
+    --card-hover-shadow: rgba(0, 0, 0, 0.25);
+    --orb-opacity: 0.22;
 
-    --card: 228 15% 10%;
-    --card-foreground: 210 20% 90%;
-
-    --popover: 228 15% 10%;
-    --popover-foreground: 210 20% 90%;
-
-    --primary: 210 50% 60%;
-    --primary-foreground: 228 15% 7%;
-
-    --secondary: 228 12% 14%;
-    --secondary-foreground: 210 20% 85%;
-
-    --muted: 228 12% 16%;
-    --muted-foreground: 210 10% 55%;
-
-    --accent: 228 12% 18%;
-    --accent-foreground: 210 20% 90%;
-
+    /* Shadcn HSL tokens (no hsl() wrapper — Tailwind adds it) */
+    --background: 234 35% 8%;
+    --foreground: 240 22% 95%;
+    --card: 237 35% 12%;
+    --card-foreground: 240 22% 95%;
+    --popover: 237 35% 12%;
+    --popover-foreground: 240 22% 95%;
+    --primary: 263 66% 59%;
+    --primary-foreground: 240 22% 95%;
+    --secondary: 237 35% 16%;
+    --secondary-foreground: 240 22% 90%;
+    --muted: 237 35% 14%;
+    --muted-foreground: 240 8% 55%;
+    --accent: 237 35% 18%;
+    --accent-foreground: 240 22% 90%;
     --destructive: 0 62% 50%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 228 10% 18%;
-    --input: 228 10% 18%;
-    --ring: 210 50% 60%;
+    --destructive-foreground: 240 22% 95%;
+    --border: 237 35% 18%;
+    --input: 237 35% 18%;
+    --ring: 263 66% 59%;
     --radius: 0.5rem;
 
-    --glass-bg: 228 15% 12% / 0.35;
-    --glass-border: 210 20% 90% / 0.08;
-    --glass-inner-bg: 228 15% 15% / 0.25;
-    --glass-inner-border: 210 20% 90% / 0.06;
-    --dot-color: 210 20% 90%;
+    /* Glass compat (used by glow hover math) */
+    --glass-bg: 237 35% 12% / 0.35;
+    --glass-inner-bg: 237 28% 28% / 0.65;
+    --glass-inner-border: 240 22% 95% / 0.16;
+    --glass-inner-shadow: 0 0% 0% / 0.20;
+    --dot-color: 240 22% 90%;
   }
 
-  /* Minimal Light — premium warm off-white */
-  [data-theme="minimal-light"] {
-    --background: 40 20% 95%;
-    --foreground: 30 10% 15%;
+  /* ── Light theme ── */
+  [data-theme="light"] {
+    /* Design raw vars */
+    --bg1: #f0f0f8;
+    --bg2: #e8e8f2;
+    --text-color: #1a1a2e;
+    --text-muted: rgba(26, 26, 46, 0.55);
+    --text-dim: rgba(26, 26, 46, 0.3);
+    --glass: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-strong: rgba(255, 255, 255, 0.7);
+    --nav-bg: rgba(240, 240, 248, 0.7);
+    --card-hover-shadow: rgba(0, 0, 0, 0.08);
+    --orb-opacity: 0.2;
 
-    --card: 40 25% 98%;
-    --card-foreground: 30 10% 15%;
-
-    --popover: 40 25% 98%;
-    --popover-foreground: 30 10% 15%;
-
-    --primary: 30 40% 42%;
-    --primary-foreground: 40 25% 98%;
-
-    --secondary: 40 15% 90%;
-    --secondary-foreground: 30 10% 20%;
-
-    --muted: 40 12% 90%;
-    --muted-foreground: 30 8% 45%;
-
-    --accent: 40 15% 88%;
-    --accent-foreground: 30 10% 15%;
-
+    /* Shadcn HSL tokens */
+    --background: 240 22% 97%;
+    --foreground: 237 35% 14%;
+    --card: 240 22% 98%;
+    --card-foreground: 237 35% 14%;
+    --popover: 240 22% 98%;
+    --popover-foreground: 237 35% 14%;
+    --primary: 263 66% 52%;
+    --primary-foreground: 240 22% 97%;
+    --secondary: 240 18% 93%;
+    --secondary-foreground: 237 35% 20%;
+    --muted: 240 18% 92%;
+    --muted-foreground: 237 15% 47%;
+    --accent: 240 18% 90%;
+    --accent-foreground: 237 35% 14%;
     --destructive: 0 65% 55%;
-    --destructive-foreground: 40 25% 98%;
+    --destructive-foreground: 240 22% 97%;
+    --border: 240 14% 87%;
+    --input: 240 14% 87%;
+    --ring: 263 66% 52%;
+    --radius: 0.5rem;
 
-    --border: 40 12% 86%;
-    --input: 40 12% 86%;
-    --ring: 30 40% 42%;
-
-    --glass-bg: 40 25% 98% / 0.4;
-    --glass-border: 30 10% 15% / 0.07;
-    --glass-inner-bg: 40 25% 97% / 0.35;
-    --glass-inner-border: 30 10% 15% / 0.05;
-    --dot-color: 30 10% 35%;
-  }
-
-  /* Nord */
-  [data-theme="nord"] {
-    --background: 220 16% 16%;
-    --foreground: 219 28% 88%;
-
-    --card: 220 16% 20%;
-    --card-foreground: 219 28% 88%;
-
-    --popover: 220 16% 20%;
-    --popover-foreground: 219 28% 88%;
-
-    --primary: 213 32% 52%;
-    --primary-foreground: 220 16% 16%;
-
-    --secondary: 220 16% 24%;
-    --secondary-foreground: 219 28% 85%;
-
-    --muted: 220 16% 22%;
-    --muted-foreground: 219 15% 55%;
-
-    --accent: 220 16% 26%;
-    --accent-foreground: 219 28% 88%;
-
-    --destructive: 354 42% 56%;
-    --destructive-foreground: 219 28% 88%;
-
-    --border: 220 16% 24%;
-    --input: 220 16% 24%;
-    --ring: 213 32% 52%;
-
-    --glass-bg: 220 16% 20% / 0.35;
-    --glass-border: 219 28% 88% / 0.08;
-    --glass-inner-bg: 220 16% 23% / 0.25;
-    --glass-inner-border: 219 28% 88% / 0.06;
-    --dot-color: 219 28% 70%;
-  }
-
-  /* Solarized */
-  [data-theme="solarized"] {
-    --background: 192 100% 6%;
-    --foreground: 44 87% 94%;
-
-    --card: 192 81% 10%;
-    --card-foreground: 44 87% 94%;
-
-    --popover: 192 81% 10%;
-    --popover-foreground: 44 87% 94%;
-
-    --primary: 175 59% 40%;
-    --primary-foreground: 192 100% 6%;
-
-    --secondary: 192 81% 14%;
-    --secondary-foreground: 44 87% 90%;
-
-    --muted: 192 81% 12%;
-    --muted-foreground: 180 7% 50%;
-
-    --accent: 192 81% 16%;
-    --accent-foreground: 44 87% 94%;
-
-    --destructive: 1 71% 52%;
-    --destructive-foreground: 44 87% 94%;
-
-    --border: 192 81% 14%;
-    --input: 192 81% 14%;
-    --ring: 175 59% 40%;
-
-    --glass-bg: 192 81% 10% / 0.35;
-    --glass-border: 44 87% 94% / 0.08;
-    --glass-inner-bg: 192 81% 13% / 0.25;
-    --glass-inner-border: 44 87% 94% / 0.06;
-    --dot-color: 44 87% 80%;
-  }
-
-  /* Catppuccin Mocha */
-  [data-theme="catppuccin-mocha"] {
-    --background: 240 21% 12%;
-    --foreground: 227 70% 87%;
-
-    --card: 240 21% 15%;
-    --card-foreground: 227 70% 87%;
-
-    --popover: 240 21% 15%;
-    --popover-foreground: 227 70% 87%;
-
-    --primary: 267 84% 81%;
-    --primary-foreground: 240 21% 12%;
-
-    --secondary: 240 21% 19%;
-    --secondary-foreground: 227 70% 83%;
-
-    --muted: 240 21% 17%;
-    --muted-foreground: 228 20% 55%;
-
-    --accent: 240 21% 21%;
-    --accent-foreground: 227 70% 87%;
-
-    --destructive: 347 87% 68%;
-    --destructive-foreground: 227 70% 87%;
-
-    --border: 240 21% 19%;
-    --input: 240 21% 19%;
-    --ring: 267 84% 81%;
-
-    --glass-bg: 240 21% 15% / 0.35;
-    --glass-border: 227 70% 87% / 0.08;
-    --glass-inner-bg: 240 21% 18% / 0.25;
-    --glass-inner-border: 227 70% 87% / 0.06;
-    --dot-color: 227 70% 70%;
-  }
-
-  /* Catppuccin Frappé */
-  [data-theme="catppuccin-frappe"] {
-    --background: 229 19% 18%;
-    --foreground: 227 50% 87%;
-
-    --card: 229 19% 22%;
-    --card-foreground: 227 50% 87%;
-
-    --popover: 229 19% 22%;
-    --popover-foreground: 227 50% 87%;
-
-    --primary: 222 74% 74%;
-    --primary-foreground: 229 19% 18%;
-
-    --secondary: 229 19% 26%;
-    --secondary-foreground: 227 50% 83%;
-
-    --muted: 229 19% 24%;
-    --muted-foreground: 227 15% 53%;
-
-    --accent: 229 19% 28%;
-    --accent-foreground: 227 50% 87%;
-
-    --destructive: 359 68% 71%;
-    --destructive-foreground: 227 50% 87%;
-
-    --border: 229 19% 26%;
-    --input: 229 19% 26%;
-    --ring: 222 74% 74%;
-
-    --glass-bg: 229 19% 22% / 0.35;
-    --glass-border: 227 50% 87% / 0.08;
-    --glass-inner-bg: 229 19% 25% / 0.25;
-    --glass-inner-border: 227 50% 87% / 0.06;
-    --dot-color: 227 50% 72%;
-  }
-
-  /* Catppuccin Macchiato */
-  [data-theme="catppuccin-macchiato"] {
-    --background: 232 23% 15%;
-    --foreground: 227 68% 88%;
-
-    --card: 232 23% 18%;
-    --card-foreground: 227 68% 88%;
-
-    --popover: 232 23% 18%;
-    --popover-foreground: 227 68% 88%;
-
-    --primary: 267 83% 80%;
-    --primary-foreground: 232 23% 15%;
-
-    --secondary: 232 23% 22%;
-    --secondary-foreground: 227 68% 84%;
-
-    --muted: 232 23% 20%;
-    --muted-foreground: 228 18% 54%;
-
-    --accent: 232 23% 24%;
-    --accent-foreground: 227 68% 88%;
-
-    --destructive: 351 74% 73%;
-    --destructive-foreground: 227 68% 88%;
-
-    --border: 232 23% 22%;
-    --input: 232 23% 22%;
-    --ring: 267 83% 80%;
-
-    --glass-bg: 232 23% 18% / 0.35;
-    --glass-border: 227 68% 88% / 0.08;
-    --glass-inner-bg: 232 23% 21% / 0.25;
-    --glass-inner-border: 227 68% 88% / 0.06;
-    --dot-color: 227 68% 72%;
-  }
-
-  /* Catppuccin Latte */
-  [data-theme="catppuccin-latte"] {
-    --background: 220 23% 95%;
-    --foreground: 234 16% 35%;
-
-    --card: 220 23% 98%;
-    --card-foreground: 234 16% 35%;
-
-    --popover: 220 23% 98%;
-    --popover-foreground: 234 16% 35%;
-
-    --primary: 266 85% 58%;
-    --primary-foreground: 220 23% 95%;
-
-    --secondary: 220 22% 90%;
-    --secondary-foreground: 234 16% 38%;
-
-    --muted: 220 20% 90%;
-    --muted-foreground: 233 10% 47%;
-
-    --accent: 220 22% 87%;
-    --accent-foreground: 234 16% 35%;
-
-    --destructive: 347 87% 44%;
-    --destructive-foreground: 220 23% 95%;
-
-    --border: 220 20% 87%;
-    --input: 220 20% 87%;
-    --ring: 266 85% 58%;
-
-    --glass-bg: 220 23% 98% / 0.4;
-    --glass-border: 234 16% 35% / 0.07;
-    --glass-inner-bg: 220 23% 97% / 0.35;
-    --glass-inner-border: 234 16% 35% / 0.05;
-    --dot-color: 234 16% 40%;
+    /* Glass compat */
+    --glass-bg: 240 22% 98% / 0.4;
+    --glass-inner-bg: 0 0% 100% / 0.78;
+    --glass-inner-border: 237 30% 20% / 0.12;
+    --glass-inner-shadow: 0 0% 0% / 0.06;
+    --dot-color: 237 35% 40%;
   }
 }
 
@@ -309,24 +111,30 @@
 
   html {
     overscroll-behavior: none;
+    scroll-behavior: auto;
+    background-color: var(--bg1);
+    transition: background-color 0.4s;
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: "JetBrains Mono", "Fira Code", "SF Mono", monospace;
+    background-color: var(--bg1);
+    color: var(--text-color);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background-color 0.4s, color 0.4s;
   }
 
-  /* Make Simple Icons follow foreground color in dark/light themes */
+  /* Simple Icons inversion for light theme */
   .invert-icon {
     filter: brightness(0) invert(1);
   }
 
-  [data-theme="minimal-light"] .invert-icon,
-  [data-theme="catppuccin-latte"] .invert-icon {
+  [data-theme="light"] .invert-icon {
     filter: brightness(0);
   }
 
-  /* Automatically map Tailwind Typography colors to internal theme variables */
+  /* Tailwind Typography — map to theme vars */
   .prose {
     --tw-prose-body: hsl(var(--foreground));
     --tw-prose-headings: hsl(var(--foreground));
@@ -335,7 +143,7 @@
     --tw-prose-bold: hsl(var(--foreground));
     --tw-prose-counters: hsl(var(--muted-foreground));
     --tw-prose-bullets: hsl(var(--primary));
-    --tw-prose-hr: hsl(var(--border));
+    --tw-prose-hr: hsl(var(--muted-foreground) / 0.35);
     --tw-prose-quotes: hsl(var(--foreground));
     --tw-prose-quote-borders: hsl(var(--primary));
     --tw-prose-captions: hsl(var(--muted-foreground));
@@ -348,6 +156,10 @@
 }
 
 @layer utilities {
+  .ambient-orb {
+    opacity: var(--orb-opacity);
+  }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -356,88 +168,98 @@
     display: none;
   }
 
+  /* Glass card with backdrop blur */
   .glass {
-    background: hsl(var(--glass-bg));
+    background: var(--glass);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid hsl(var(--glass-border));
+    border: 1px solid var(--glass-border);
+    isolation: isolate;
   }
 
   .glass-inner {
     background: hsl(var(--glass-inner-bg));
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border: 1px solid hsl(var(--glass-inner-border));
+    box-shadow: 0 1px 3px hsl(var(--glass-inner-shadow));
+    isolation: isolate;
   }
 
-  /* Style for inline code blocks (single backtick) in markdown */
+  /* Tech-stack tiles — tint driven by --tile-tint CSS variable */
+  .tech-tile {
+    background-color: hsla(var(--tile-tint) / 0.08);
+    border: 1px solid hsla(var(--tile-tint) / 0.12);
+    transition: border-color .3s, background-color .3s;
+  }
+  .tech-tile:hover {
+    background-color: hsla(var(--tile-tint) / 0.14);
+    border-color: hsla(var(--tile-tint) / 0.40);
+  }
+
+  /* Purple gradient text (for hero typing word) */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-magenta));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Inline code blocks in markdown */
   .prose :not(pre) > code {
     @apply bg-muted/50 text-primary px-1.5 py-0.5 rounded-md font-mono text-[0.875em] border border-border/50;
   }
 
-  /* Remove Tailwind Typography's default pseudo-element backticks */
   .prose :not(pre) > code::before,
   .prose :not(pre) > code::after {
     content: none !important;
   }
 }
 
-/* Mouse glow on containers — desktop only */
-@media (pointer: fine) {
-  .glow-container,
-  nav .glass,
-  footer .glass {
-    position: relative;
-    overflow: hidden;
-  }
+/* ── Keyframes ── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 
-  .glow-container::before,
-  nav .glass::before,
-  footer .glass::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    background: radial-gradient(250px circle at var(--mx, -999px) var(--my, -999px), hsl(var(--primary) / 0.07) 0%, transparent 70%);
-    background-attachment: fixed;
-  }
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
 
-  .glow-container:hover::before,
-  nav .glass:hover::before,
-  footer .glass:hover::before {
-    opacity: 1;
-  }
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
 
-  /* Always show glow on all containers when mouse is on page */
-  :root:has(:hover) .glow-container::before,
-  :root:has(:hover) nav .glass::before,
-  :root:has(:hover) footer .glass::before {
-    opacity: 1;
-  }
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
 
-  /* Border glow effect */
-  .glow-container::after,
-  nav .glass::after,
-  footer .glass::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.12);
-    background: radial-gradient(300px circle at var(--mx, -999px) var(--my, -999px), hsl(var(--primary) / 0.04) 0%, transparent 60%);
-    background-attachment: fixed;
+/* ── Marquee — respect reduced-motion ── */
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation-play-state: paused !important; }
   }
+}
 
-  :root:has(:hover) .glow-container::after,
-  :root:has(:hover) nav .glass::after,
-  :root:has(:hover) footer .glass::after {
-    opacity: 1;
+/* ── Glassmorphism filter pills — placed in utilities layer to win over shadcn component defaults ── */
+@layer utilities {
+  .filter-pill {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .filter-pill:hover {
+    background: var(--glass-strong);
+    color: var(--text-color);
+  }
+  .filter-pill[data-state="on"] {
+    background: oklch(0.65 0.2 220 / 0.18);
+    border-color: oklch(0.65 0.2 220 / 0.5);
+    box-shadow: 0 0 14px -4px oklch(0.65 0.2 220 / 0.4);
+    color: var(--accent-blue);
   }
 }

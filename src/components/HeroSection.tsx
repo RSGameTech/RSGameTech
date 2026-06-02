@@ -1,82 +1,157 @@
-import { useConfig } from "@/hooks/useConfig";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
+import { useTypingEffect } from "@/hooks/useTypingEffect";
 import { motion } from "framer-motion";
-import { revealVariants, staggerContainer } from "@/hooks/useScrollReveal";
-
-interface HeroConfig {
-  name: string;
-  tagline: string;
-  role: string;
-  socials: { label: string; url: string; icon: string }[];
-}
+import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
+import { ChevronDown } from "lucide-react";
+import config from "@/config/hero";
+import { socials } from "@/config/socials";
+import SocialIcon from "@/components/SocialIcon";
 
 const HeroSection = () => {
-  const { data: config, isLoading } = useConfig<HeroConfig>("/config/hero.json", {
-    name: "RSGameTech",
-    tagline: "Building Digital Experiences",
-    role: "Developer",
-    socials: [],
-  });
 
-  if (isLoading) {
-    return (
-      <section className="flex flex-col items-center justify-center w-full">
-        <div className="w-full glass rounded-xl glow-container border-0 p-6 space-y-6 flex flex-col items-center">
-          <Skeleton className="h-16 w-3/4 md:w-1/2" />
-          <Skeleton className="h-8 w-1/3" />
-          <Skeleton className="h-6 w-1/4" />
-          <div className="flex gap-3 pt-2">
-            <Skeleton className="w-10 h-10 rounded-lg" />
-            <Skeleton className="w-10 h-10 rounded-lg" />
-            <Skeleton className="w-10 h-10 rounded-lg" />
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const words = config.gradientWords ?? ["web", "startups", "humans", "tomorrow", "fun"];
+  const typedWord = useTypingEffect(words);
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToNextSection = () => {
+    window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+  };
 
   return (
-    <section className="flex flex-col items-center justify-center">
-      <Card className="glass rounded-xl glow-container border-0 w-full text-center p-6 space-y-6">
-        <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-6">
-          <motion.h1 variants={revealVariants} className="text-5xl md:text-7xl font-bold tracking-tight text-foreground">
-            {config.name}
-          </motion.h1>
-          <motion.div variants={revealVariants}>
-            <Badge variant="outline" className="px-4 py-1.5 text-sm font-medium bg-primary/10 text-primary border-primary/20">
-              {config.tagline}
-            </Badge>
-          </motion.div>
-          <motion.p variants={revealVariants} className="text-muted-foreground text-lg">
-            {config.role}
-          </motion.p>
-          <motion.div variants={revealVariants} className="flex items-center justify-center gap-3 pt-2">
-            {config.socials.map((social) => (
-              <Button
-                key={social.label}
-                variant="ghost"
-                size="icon"
-                asChild
-                className="glass-inner rounded-lg hover:bg-accent"
+    <section
+      id="hero"
+      className="w-full relative flex flex-col justify-center min-h-[100vh] min-h-[100dvh]"
+    >
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col gap-5"
+      >
+        {/* Status badge */}
+        <motion.div variants={revealVariants}>
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm"
+            style={{
+              background: "var(--glass)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "1px solid var(--glass-border)",
+              color: "var(--accent-purple)",
+              width: "fit-content",
+            }}
+          >
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ background: "#4ade80", animation: "pulse 2s infinite" }}
+            />
+            {config.availability ?? "Available for work"}
+          </div>
+        </motion.div>
+
+        {/* Headline */}
+        <motion.h1
+          variants={revealVariants}
+          className="font-bold leading-[1.1]"
+          style={{
+            fontSize: "clamp(40px, 7vw, 72px)",
+            letterSpacing: "-2px",
+            color: "var(--text-color)",
+          }}
+        >
+          I build things
+          <br />
+          for the{" "}
+          <span className="gradient-text">{typedWord}</span>
+          <span
+            style={{
+              display: "inline-block",
+              width: 3,
+              height: "0.9em",
+              background: "var(--accent-purple)",
+              marginLeft: 4,
+              animation: "blink 0.8s step-end infinite",
+              verticalAlign: "baseline",
+              position: "relative",
+              top: "0.05em",
+            }}
+          />
+        </motion.h1>
+
+        {/* Tagline */}
+        <motion.p
+          variants={revealVariants}
+          style={{
+            fontSize: 18,
+            color: "var(--text-muted)",
+            maxWidth: 520,
+            lineHeight: 1.6,
+          }}
+        >
+          {config.tagline}
+        </motion.p>
+
+        {/* Social links */}
+        {socials.some(s => s.showInHero !== false) && (
+          <motion.div variants={revealVariants} className="flex items-center gap-2">
+            {socials.filter(s => s.showInHero !== false).map((s) => (
+              <a
+                key={s.label}
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
+                style={{
+                  background: "var(--glass)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  border: "1px solid var(--glass-border)",
+                  color: "var(--text-muted)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "var(--glass-strong)";
+                  e.currentTarget.style.color = "var(--text-color)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "var(--glass)";
+                  e.currentTarget.style.color = "var(--text-muted)";
+                }}
               >
-                <a href={social.url} target="_blank" rel="noopener noreferrer" aria-label={social.label}>
-                  <img
-                    src={`https://cdn.simpleicons.org/${social.icon}`}
-                    alt={social.label}
-                    className="w-5 h-5 invert-icon"
-                    loading="lazy"
-                  />
-                </a>
-              </Button>
+                <SocialIcon link={s} />
+                {s.label}
+              </a>
             ))}
           </motion.div>
-        </motion.div>
-      </Card>
+        )}
+
+      </motion.div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isScrolled ? 0 : 1 }}
+        transition={{ delay: isScrolled ? 0 : 1.5, duration: isScrolled ? 0.3 : 1 }}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 cursor-pointer flex flex-col items-center gap-2 text-[var(--text-muted)] hover:text-[var(--text-color)] transition-colors z-10"
+        style={{ pointerEvents: isScrolled ? "none" : "auto" }}
+        onClick={scrollToNextSection}
+      >
+        <span className="text-[10px] uppercase tracking-[0.2em] font-medium">Scroll</span>
+        <ChevronDown size={20} className="animate-bounce" />
+      </motion.div>
     </section>
   );
 };
 
 export default HeroSection;
+
