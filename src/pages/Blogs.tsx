@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import FooterSection from "@/components/FooterSection";
 import ResponsiveImage from "@/components/ResponsiveImage";
 import { Card } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
+import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import { format } from "date-fns";
 import { ArrowRight } from "lucide-react";
 
@@ -16,68 +18,92 @@ const Blogs = () => {
 
   return (
     <main className="flex flex-col gap-6 px-4 max-w-4xl mx-auto min-h-screen pt-[70px]">
-      {/* Header */}
-      <div className="text-center mb-4">
-        <h1 className="text-4xl font-bold text-foreground mb-2">Blog</h1>
-        <p className="text-muted-foreground">Thoughts on web development, design, and technology</p>
-      </div>
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col gap-6"
+      >
+        {/* Header */}
+        <motion.div variants={revealVariants} className="text-center mb-4">
+          <h1 className="text-4xl font-bold text-foreground mb-2">Blog</h1>
+          <p className="text-muted-foreground">Thoughts on web development, design, and technology</p>
+        </motion.div>
 
-      {/* Posts Grid */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-96 w-full rounded-xl" />
-          ))}
-        </div>
-      ) : posts.length === 0 ? (
-        <Card className="glass rounded-xl border-0 p-8 text-center">
-          <p className="text-muted-foreground">No blog posts yet. Check back soon!</p>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Skeleton while loading */}
+        {isLoading && (
+          <motion.div variants={revealVariants}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="h-96 w-full rounded-xl" />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && posts.length === 0 && (
+          <motion.div variants={revealVariants}>
+            <Card className="glass rounded-xl border-0 p-8 text-center">
+              <p className="text-muted-foreground">No blog posts yet. Check back soon!</p>
+            </Card>
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Posts grid — own stagger so cards animate in after skeleton clears */}
+      {!isLoading && posts.length > 0 && (
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
           {posts.map((post) => (
-            <Card key={post.slug} className="glass rounded-xl border-0 overflow-hidden hover:border-primary/50 transition-all duration-300 flex flex-col group">
-              {/* Featured Image */}
-              {post.featuredImage && (
-                <div className="aspect-video overflow-hidden bg-muted">
-                  <ResponsiveImage src={post.featuredImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                </div>
-              )}
-
-              {/* Content */}
-              <div className="p-4 flex flex-col flex-1">
-                {/* Title & Date */}
-                <div className="mb-2">
-                  <h2 className="text-xl font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors">{post.title}</h2>
-                  <p className="text-xs text-muted-foreground mt-1">{format(new Date(post.date), "MMM d, yyyy")}</p>
-                </div>
-
-                {/* Description */}
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-3 flex-1">{post.description}</p>
-
-                {/* Tags */}
-                {post.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.slice(0, 2).map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                    {post.tags.length > 2 && <span className="text-xs text-muted-foreground">+{post.tags.length - 2} more</span>}
+            <motion.div key={post.slug} variants={revealVariants}>
+              <Card className="glass rounded-xl border-0 overflow-hidden hover:border-primary/50 transition-all duration-300 flex flex-col group h-full">
+                {/* Featured Image */}
+                {post.featuredImage && (
+                  <div className="aspect-video overflow-hidden bg-muted">
+                    <ResponsiveImage src={post.featuredImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   </div>
                 )}
 
-                {/* Read More Button */}
-                <Button variant="ghost" asChild className="glass-inner glow-container w-fit px-4 py-2 mt-auto text-primary hover:text-primary/80 group/btn rounded-full">
-                  <Link to={`/blogs/${post.slug}`}>
-                    Read More
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-              </div>
-            </Card>
+                {/* Content */}
+                <div className="p-4 flex flex-col flex-1">
+                  {/* Title & Date */}
+                  <div className="mb-2">
+                    <h2 className="text-xl font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors">{post.title}</h2>
+                    <p className="text-xs text-muted-foreground mt-1">{format(new Date(post.date), "MMM d, yyyy")}</p>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3 flex-1">{post.description}</p>
+
+                  {/* Tags */}
+                  {post.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {post.tags.slice(0, 2).map((tag) => (
+                        <Badge key={tag} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                      {post.tags.length > 2 && <span className="text-xs text-muted-foreground">+{post.tags.length - 2} more</span>}
+                    </div>
+                  )}
+
+                  {/* Read More Button */}
+                  <Button variant="ghost" asChild className="glass-inner glow-container w-fit px-4 py-2 mt-auto text-primary hover:text-primary/80 group/btn rounded-full">
+                    <Link to={`/blogs/${post.slug}`}>
+                      Read More
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       <FooterSection />

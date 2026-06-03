@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import FooterSection from "@/components/FooterSection";
 import GlassContainer from "@/components/GlassContainer";
 import ResponsiveImage from "@/components/ResponsiveImage";
@@ -9,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import type { BlogPost } from "@/hooks/useBlogPosts";
+import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 
@@ -45,67 +47,82 @@ const BlogPostPage = () => {
           </div>
         </GlassContainer>
       ) : notFound ? (
-        <GlassContainer className="text-center py-16 px-8">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Post Not Found</h1>
-          <p className="text-muted-foreground mb-6">The blog post you're looking for doesn't exist.</p>
-          <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-5 py-2.5 text-sm text-muted-foreground hover:text-foreground">
-            <Link to="/blogs">
-              <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Blogs
-            </Link>
-          </Button>
-        </GlassContainer>
+        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div variants={revealVariants}>
+            <GlassContainer className="text-center py-16 px-8">
+              <h1 className="text-2xl font-bold text-foreground mb-4">Post Not Found</h1>
+              <p className="text-muted-foreground mb-6">The blog post you're looking for doesn't exist.</p>
+              <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-5 py-2.5 text-sm text-muted-foreground hover:text-foreground">
+                <Link to="/blogs">
+                  <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Blogs
+                </Link>
+              </Button>
+            </GlassContainer>
+          </motion.div>
+        </motion.div>
       ) : post ? (
-        <>
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col gap-6"
+        >
           {/* Featured Image */}
           {post.featuredImage && (
-            <GlassContainer className="overflow-hidden p-0 rounded-xl">
-              <div className="aspect-video">
-                <ResponsiveImage src={post.featuredImage} alt={post.title} priority={true} className="w-full h-full object-cover rounded-xl" />
-              </div>
-            </GlassContainer>
+            <motion.div variants={revealVariants}>
+              <GlassContainer className="overflow-hidden p-0 rounded-xl">
+                <div className="aspect-video">
+                  <ResponsiveImage src={post.featuredImage} alt={post.title} priority={true} className="w-full h-full object-cover rounded-xl" />
+                </div>
+              </GlassContainer>
+            </motion.div>
           )}
 
           {/* Post Header */}
-          <GlassContainer className="p-6 md:p-8">
-            <div className="mb-4">
-              <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-4 py-2 text-sm text-muted-foreground hover:text-foreground mb-6">
-                <Link to="/blogs">
-                  <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Back to Blogs
-                </Link>
-              </Button>
-            </div>
+          <motion.div variants={revealVariants}>
+            <GlassContainer className="p-6 md:p-8">
+              <div className="mb-4">
+                <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-4 py-2 text-sm text-muted-foreground hover:text-foreground mb-6">
+                  <Link to="/blogs">
+                    <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Back to Blogs
+                  </Link>
+                </Button>
+              </div>
 
-            <h1 className="text-4xl font-bold text-foreground mb-4">{post.title}</h1>
+              <h1 className="text-4xl font-bold text-foreground mb-4">{post.title}</h1>
 
-            {/* Meta Information */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-6 pb-6 border-b border-border/30">
-              <time className="text-sm text-muted-foreground">{format(new Date(post.date), "MMMM d, yyyy")}</time>
-              {post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
+              {/* Meta Information */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-6 pb-6 border-b border-border/30">
+                <time className="text-sm text-muted-foreground">{format(new Date(post.date), "MMMM d, yyyy")}</time>
+                {post.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-            {/* Post Content */}
-            <article className="prose max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-a:text-primary prose-strong:text-foreground prose-ul:text-foreground/90 prose-li:text-foreground/90 prose-blockquote:text-muted-foreground prose-blockquote:border-l-primary prose-code:text-foreground prose-pre:bg-card prose-pre:border prose-pre:border-border prose-hr:border-border">
-              <post.component components={{ img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <ResponsiveImage src={props.src!} alt={props.alt || ""} className="rounded-xl shadow-sm my-8" {...props} /> }} />
-            </article>
-          </GlassContainer>
+              {/* Post Content */}
+              <article className="prose max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-a:text-primary prose-strong:text-foreground prose-ul:text-foreground/90 prose-li:text-foreground/90 prose-blockquote:text-muted-foreground prose-blockquote:border-l-primary prose-code:text-foreground prose-pre:bg-card prose-pre:border prose-pre:border-border prose-hr:border-border">
+                <post.component components={{ img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <ResponsiveImage src={props.src!} alt={props.alt || ""} className="rounded-xl shadow-sm my-8" {...props} /> }} />
+              </article>
+            </GlassContainer>
+          </motion.div>
 
           {/* Navigation */}
-          <GlassContainer className="text-center py-8">
-            <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-6 py-2.5 text-sm text-muted-foreground hover:text-foreground">
-              <Link to="/blogs">
-                <ArrowLeft className="w-4 h-4 mr-2" /> Back to All Posts
-              </Link>
-            </Button>
-          </GlassContainer>
-        </>
+          <motion.div variants={revealVariants}>
+            <GlassContainer className="text-center py-8">
+              <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-6 py-2.5 text-sm text-muted-foreground hover:text-foreground">
+                <Link to="/blogs">
+                  <ArrowLeft className="w-4 h-4 mr-2" /> Back to All Posts
+                </Link>
+              </Button>
+            </GlassContainer>
+          </motion.div>
+        </motion.div>
       ) : null}
 
       <FooterSection />

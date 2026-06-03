@@ -1,6 +1,8 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 import FooterSection from "@/components/FooterSection";
+import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 
 const NotFound = () => {
   const location = useLocation();
@@ -11,8 +13,14 @@ const NotFound = () => {
 
   return (
     <main className="flex flex-col w-full max-w-4xl mx-auto px-4 min-h-screen pt-[90px]">
-      <div className="flex-1 flex items-center justify-center">
-        <div
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="flex-1 flex items-center justify-center"
+      >
+        <motion.div
+          variants={revealVariants}
           className="rounded-2xl p-10 flex flex-col items-center gap-4 text-center"
           style={{
             background: "var(--glass)",
@@ -37,8 +45,8 @@ const NotFound = () => {
           >
             Return to Home
           </Link>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
       <FooterSection />
     </main>
   );

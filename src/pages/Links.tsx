@@ -1,7 +1,9 @@
+import { motion } from "framer-motion";
 import FooterSection from "@/components/FooterSection";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
+import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import { ChevronRight, Link as LinkIcon, Github, Twitter, Globe, BookOpen, FileText, LifeBuoy } from "lucide-react";
 import config from "@/config/links";
 import type { LinksConfig } from "@/config/links";
@@ -54,10 +56,23 @@ const Links = () => {
 
   return (
     <main className="flex flex-col gap-3 px-4 max-w-md mx-auto min-h-screen pb-[20px] pt-[70px]">
-      {config.title && <h1 className="text-3xl font-bold text-foreground text-center mb-2">{config.title}</h1>}
-      {config.groups.map((group) => (
-        <LinkGroup key={group.title} group={group} />
-      ))}
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col gap-3"
+      >
+        {config.title && (
+          <motion.h1 variants={revealVariants} className="text-3xl font-bold text-foreground text-center mb-2">
+            {config.title}
+          </motion.h1>
+        )}
+        {config.groups.map((group) => (
+          <motion.div key={group.title} variants={revealVariants}>
+            <LinkGroup group={group} />
+          </motion.div>
+        ))}
+      </motion.div>
       <FooterSection />
     </main>
   );
