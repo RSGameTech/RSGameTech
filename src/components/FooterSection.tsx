@@ -170,7 +170,7 @@ const FooterSection = () => {
               © {year} {brand}. All rights reserved.
             </span>
           </div>
-          <div className="flex flex-col items-end gap-1.5">
+          <div className="flex flex-col items-end gap-4">
             {views && (
               <div
                 className="glass-inner flex items-center gap-3 p-4"
