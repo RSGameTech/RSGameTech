@@ -173,14 +173,8 @@ const FooterSection = () => {
           <div className="flex flex-col items-end gap-1.5">
             {views && (
               <div
-                className="flex items-center gap-3 px-3 py-1.5"
-                style={{
-                  borderRadius: 10,
-                  background: "var(--glass-bg)",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
-                  border: "1px solid var(--glass-border)",
-                }}
+                className="glass-inner flex items-center gap-3 px-3 py-1.5"
+                style={{ borderRadius: FOOTER_INNER_RADIUS }}
               >
                 <span className="text-xs" style={{ color: "var(--text-dim)" }}>
                   <span className="font-medium" style={{ color: "var(--text-muted)" }}>
