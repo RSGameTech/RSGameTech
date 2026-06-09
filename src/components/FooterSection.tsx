@@ -161,7 +161,7 @@ const FooterSection = () => {
         </div>
 
         {/* ── Bottom bar ──────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2 pt-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 pt-4">
           <div className="flex flex-col gap-0.5">
             <span className="text-sm font-bold tracking-tight" style={{ color: "var(--text-color)", letterSpacing: "-0.5px" }}>
               {brand}<span style={{ color: "var(--accent-purple)" }}>.</span>
