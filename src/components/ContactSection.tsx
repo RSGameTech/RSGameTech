@@ -282,7 +282,12 @@ const ContactSection = () => {
 
                 {/* Submit */}
                 <div className="flex items-center gap-3 pt-1">
-                  <Button type="submit" disabled={isSending} className="gap-2">
+                  <Button
+                    type="submit"
+                    disabled={isSending}
+                    className="gap-2 rounded-full text-white transition-all duration-200 hover:scale-105 hover:shadow-[0_4px_20px_oklch(0.7_0.18_270_/_0.4)]"
+                    style={{ background: "var(--accent-purple)" }}
+                  >
                     <Send size={14} />
                     {isSending ? "Sending…" : "Send Message"}
                   </Button>
