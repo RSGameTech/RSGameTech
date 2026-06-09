@@ -158,6 +158,24 @@ const FooterSection = () => {
               ))}
             </ul>
           </div>
+
+          {/* View counter — mobile only (desktop shows in bottom bar) */}
+          {views && (
+            <div className="glass-inner p-4 col-span-2 md:hidden" style={{ borderRadius: FOOTER_INNER_RADIUS }}>
+              <BoxHeading>Site Views</BoxHeading>
+              <div className="flex items-center gap-3">
+                <span className="text-sm" style={{ color: "var(--text-muted)" }}>
+                  <span className="font-semibold">{views.total.toLocaleString()}</span>{" "}
+                  <span className="text-xs" style={{ color: "var(--text-dim)" }}>total</span>
+                </span>
+                <span style={{ color: "var(--glass-border)" }}>·</span>
+                <span className="text-sm" style={{ color: "var(--text-muted)" }}>
+                  <span className="font-semibold">{views.unique.toLocaleString()}</span>{" "}
+                  <span className="text-xs" style={{ color: "var(--text-dim)" }}>unique</span>
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── Bottom bar ──────────────────────────────────────────────── */}
@@ -173,7 +191,7 @@ const FooterSection = () => {
           <div className="flex flex-col items-end gap-4">
             {views && (
               <div
-                className="glass-inner flex items-center gap-3 px-3 py-2"
+                className="glass-inner hidden md:flex items-center gap-3 px-3 py-2"
                 style={{ borderRadius: FOOTER_INNER_RADIUS }}
               >
                 <span className="text-xs" style={{ color: "var(--text-dim)" }}>
