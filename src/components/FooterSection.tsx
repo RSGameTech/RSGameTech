@@ -161,7 +161,7 @@ const FooterSection = () => {
         </div>
 
         {/* ── Bottom bar ──────────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2 pt-4">
           <div className="flex flex-col gap-0.5">
             <span className="text-sm font-bold tracking-tight" style={{ color: "var(--text-color)", letterSpacing: "-0.5px" }}>
               {brand}<span style={{ color: "var(--accent-purple)" }}>.</span>
@@ -170,26 +170,37 @@ const FooterSection = () => {
               © {year} {brand}. All rights reserved.
             </span>
           </div>
-          {views && (
-            <span className="text-xs flex items-center gap-3" style={{ color: "var(--text-dim)" }}>
-              <span>
-                <span className="font-medium" style={{ color: "var(--text-muted)" }}>
-                  {views.total.toLocaleString()}
-                </span>{" "}views
-              </span>
-              <span style={{ color: "var(--glass-border)" }}>·</span>
-              <span>
-                <span className="font-medium" style={{ color: "var(--text-muted)" }}>
-                  {views.unique.toLocaleString()}
-                </span>{" "}unique
-              </span>
+          <div className="flex flex-col items-end gap-1.5">
+            {views && (
+              <div
+                className="flex items-center gap-3 px-3 py-1.5"
+                style={{
+                  borderRadius: 10,
+                  background: "var(--glass-bg)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  border: "1px solid var(--glass-border)",
+                }}
+              >
+                <span className="text-xs" style={{ color: "var(--text-dim)" }}>
+                  <span className="font-medium" style={{ color: "var(--text-muted)" }}>
+                    {views.total.toLocaleString()}
+                  </span>{" "}views
+                </span>
+                <span style={{ color: "var(--glass-border)" }}>·</span>
+                <span className="text-xs" style={{ color: "var(--text-dim)" }}>
+                  <span className="font-medium" style={{ color: "var(--text-muted)" }}>
+                    {views.unique.toLocaleString()}
+                  </span>{" "}unique
+                </span>
+              </div>
+            )}
+            <span className="text-xs" style={{ color: "var(--text-dim)" }}>
+              It&apos;s{" "}
+              <span className="font-medium" style={{ color: "var(--text-muted)" }}>{time}</span>
+              {" "}in my timezone ({config.timezoneLabel})
             </span>
-          )}
-          <span className="text-xs" style={{ color: "var(--text-dim)" }}>
-            It&apos;s{" "}
-            <span className="font-medium" style={{ color: "var(--text-muted)" }}>{time}</span>
-            {" "}in my timezone ({config.timezoneLabel})
-          </span>
+          </div>
         </div>
       </div>
     </section>
