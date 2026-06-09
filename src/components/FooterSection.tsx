@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import config from "@/config/footer";
+import { useViewCounter } from "@/hooks/useViewCounter";
 import { socials } from "@/config/socials";
 import navbarConfig from "@/config/navbar";
 import SocialIcon from "@/components/SocialIcon";
@@ -35,6 +36,7 @@ const linkClass = "flex items-center gap-2.5 text-sm py-1 transition-colors dura
 // ── Component ─────────────────────────────────────────────────────────────
 const FooterSection = () => {
   const [time, setTime] = useState("");
+  const views = useViewCounter();
 
   useEffect(() => {
     const update = () => {
@@ -168,6 +170,21 @@ const FooterSection = () => {
               © {year} {brand}. All rights reserved.
             </span>
           </div>
+          {views && (
+            <span className="text-xs flex items-center gap-3" style={{ color: "var(--text-dim)" }}>
+              <span>
+                <span className="font-medium" style={{ color: "var(--text-muted)" }}>
+                  {views.total.toLocaleString()}
+                </span>{" "}views
+              </span>
+              <span style={{ color: "var(--glass-border)" }}>·</span>
+              <span>
+                <span className="font-medium" style={{ color: "var(--text-muted)" }}>
+                  {views.unique.toLocaleString()}
+                </span>{" "}unique
+              </span>
+            </span>
+          )}
           <span className="text-xs" style={{ color: "var(--text-dim)" }}>
             It&apos;s{" "}
             <span className="font-medium" style={{ color: "var(--text-muted)" }}>{time}</span>
