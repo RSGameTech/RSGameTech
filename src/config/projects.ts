@@ -41,9 +41,9 @@ const projects: ProjectsConfig = {
   items: [
     {
       title: "Lucedily",
-      description: "Lucedily is a web application that provides a seamless and intuitive platform for booking and managing appointments with a focus on visual clarity and user experience.",
+      description: "A fast, single-page personal site built with React + Vite for an Indian gaming YouTuber. Features smooth Framer Motion animations, a cozy late-night aesthetic, full SEO setup (Open Graph, Twitter cards, JSON-LD), and A-grade security headers. Deployed on Vercel.",
       tags: [
-        { label: "React",      color: "#61dafb" },
+        { label: "React", color: "#61dafb" },
         { label: "TypeScript", color: "#3178c6" },
       ],
       image: "/images/project-image/lucedily-personal-website.png",
@@ -52,13 +52,15 @@ const projects: ProjectsConfig = {
       featured: true,
     },
     {
-      title: "Project Beta",
+      title: "Kamyaa Store",
       description: "An experimental tool built to solve a specific workflow problem — fast, lightweight, and open source.",
       tags: [
-        { label: "Python",  color: "#3572a5" },
-        { label: "FastAPI", color: "#059669" },
+        { label: "React", color: "#61dafb" },
+        // { label: "FastAPI", color: "#059669" },
       ],
-      repoUrl: "#",
+      // image: "/images/project-image/kamyaa-store.png",
+      liveUrl: "https://www.kamyaa.store/",
+      // repoUrl: "#",
       status: "wip",
       featured: false,
     },
