@@ -23,11 +23,12 @@ export function useSmoothScroll() {
 
     const lenis = new Lenis({
       lerp: reduce ? 1 : 0.1,
+      // Smooth the desktop wheel only. Touch is left native: Lenis' syncTouch
+      // interpolates touch movement (feels slow/laggy on mobile) and
+      // preventDefaults touch events, which also re-focuses form fields and
+      // pops the on-screen keyboard back up when scrolling. ScrollTrigger
+      // listens to native scroll directly, so reveals still animate on mobile.
       smoothWheel: !reduce,
-      // Drive touch scrolling through Lenis too, so the GSAP/ScrollTrigger
-      // pipeline runs on mobile (reveals animate, scroll feels smooth) — not
-      // just on desktop wheel scroll.
-      syncTouch: !reduce,
     });
     lenisInstance = lenis;
 
