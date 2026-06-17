@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import FooterSection from "@/components/FooterSection";
 import ResponsiveImage from "@/components/ResponsiveImage";
 import { Card } from "@/components/ui/card";
@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import { format } from "date-fns";
 import { ArrowRight } from "lucide-react";
 
@@ -18,49 +17,42 @@ const Blogs = () => {
 
   return (
     <main className="flex flex-col gap-6 px-4 max-w-4xl mx-auto min-h-screen pt-[70px]">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="flex flex-col gap-6"
-      >
+      <RevealGroup trigger="mount" className="flex flex-col gap-6">
         {/* Header */}
-        <motion.div variants={revealVariants} className="text-center mb-4">
+        <Reveal className="text-center mb-4">
           <h1 className="text-4xl font-bold text-foreground mb-2">Blog</h1>
           <p className="text-muted-foreground">Thoughts on web development, design, and technology</p>
-        </motion.div>
+        </Reveal>
 
         {/* Skeleton while loading */}
         {isLoading && (
-          <motion.div variants={revealVariants}>
+          <Reveal>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[...Array(4)].map((_, i) => (
                 <Skeleton key={i} className="h-96 w-full rounded-xl" />
               ))}
             </div>
-          </motion.div>
+          </Reveal>
         )}
 
         {/* Empty state */}
         {!isLoading && posts.length === 0 && (
-          <motion.div variants={revealVariants}>
+          <Reveal>
             <Card className="glass rounded-xl border-0 p-8 text-center">
               <p className="text-muted-foreground">No blog posts yet. Check back soon!</p>
             </Card>
-          </motion.div>
+          </Reveal>
         )}
-      </motion.div>
+      </RevealGroup>
 
       {/* Posts grid — own stagger so cards animate in after skeleton clears */}
       {!isLoading && posts.length > 0 && (
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
+        <RevealGroup
+          trigger="mount"
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           {posts.map((post) => (
-            <motion.div key={post.slug} variants={revealVariants}>
+            <Reveal key={post.slug}>
               <Card className="glass rounded-xl border-0 overflow-hidden hover:border-primary/50 transition-all duration-300 flex flex-col group h-full">
                 {/* Featured Image */}
                 {post.featuredImage && (
@@ -101,9 +93,9 @@ const Blogs = () => {
                   </Button>
                 </div>
               </Card>
-            </motion.div>
+            </Reveal>
           ))}
-        </motion.div>
+        </RevealGroup>
       )}
 
       <FooterSection />

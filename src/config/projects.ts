@@ -41,7 +41,7 @@ const projects: ProjectsConfig = {
   items: [
     {
       title: "Lucedily",
-      description: "A fast, single-page personal site built with React + Vite for an Indian gaming YouTuber. Features smooth Framer Motion animations, a cozy late-night aesthetic, full SEO setup (Open Graph, Twitter cards, JSON-LD), and A-grade security headers. Deployed on Vercel.",
+      description: "A fast, single-page personal site built with React + Vite for an Indian gaming YouTuber. Features smooth GSAP animations, a cozy late-night aesthetic, full SEO setup (Open Graph, Twitter cards, JSON-LD), and A-grade security headers. Deployed on Vercel.",
       tags: [
         { label: "React", color: "#61dafb" },
         { label: "TypeScript", color: "#3178c6" },

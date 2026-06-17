@@ -2,8 +2,7 @@ import { useRef, useEffect } from "react";
 import { hslToHex } from "@/lib/utils";
 import TiltCard from "@/components/TiltCard";
 import config from "@/config/toolkit";
-import { motion, useInView } from "framer-motion";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import {
   Code,
   Terminal,
@@ -246,23 +245,14 @@ function MarqueeRow({
 }
 
 const ToolkitSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   const items = config.items;
   const topItems = items.filter((_, i) => i % 2 === 0);
   const bottomItems = items.filter((_, i) => i % 2 !== 0);
 
   return (
     <section id="toolkit" className="w-full flex flex-col justify-center relative py-5">
-      <motion.div
-        ref={ref}
-        variants={staggerContainer}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        className="flex flex-col gap-5"
-      >
-        <motion.div variants={revealVariants}>
+      <RevealGroup className="flex flex-col gap-5">
+        <Reveal>
           <h2
             className="font-bold"
             style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
@@ -274,9 +264,9 @@ const ToolkitSection = () => {
               {config.subheading}
             </p>
           )}
-        </motion.div>
+        </Reveal>
 
-        <motion.div variants={revealVariants}>
+        <Reveal>
           {/* Desktop: single row */}
           <div className="hidden md:block">
             <MarqueeRow items={items} direction="left" duration={25} />
@@ -287,8 +277,8 @@ const ToolkitSection = () => {
             <MarqueeRow items={topItems} direction="left" duration={20} />
             <MarqueeRow items={bottomItems} direction="right" duration={25} />
           </div>
-        </motion.div>
-      </motion.div>
+        </Reveal>
+      </RevealGroup>
     </section>
   );
 };

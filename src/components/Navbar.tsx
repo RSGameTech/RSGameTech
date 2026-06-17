@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { useTheme } from "@/hooks/useTheme";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import config from "@/config/navbar";
+
+gsap.registerPlugin(useGSAP);
 
 const NAV_SURFACE_RADIUS = 26;
 
@@ -21,9 +24,13 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
   const { theme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuMounted, setMenuMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 768 : false);
   const rafRef = useRef<number | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuIconRef = useRef<HTMLSpanElement>(null);
+  const closeIconRef = useRef<HTMLSpanElement>(null);
   const location = useLocation();
 
   // Scroll → pill transition
@@ -70,6 +77,8 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
   // Single-pill measurement — X-only so scroll position never contaminates the animation
   const navRef = useRef<HTMLElement>(null);
   const linkSpanRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const pillRef = useRef<HTMLSpanElement>(null);
+  const pillInitialized = useRef(false);
   const [pill, setPill] = useState<{ x: number; w: number } | null>(null);
 
   useEffect(() => {
@@ -86,6 +95,84 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
     return () => cancelAnimationFrame(raf);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+
+  // Slide the active-link pill. First appearance jumps into place (no animation),
+  // subsequent route changes spring across with a back-out ease.
+  useGSAP(
+    () => {
+      if (!pill || !pillRef.current) return;
+      if (!pillInitialized.current) {
+        gsap.set(pillRef.current, { x: pill.x, width: pill.w });
+        pillInitialized.current = true;
+      } else {
+        gsap.to(pillRef.current, {
+          x: pill.x,
+          width: pill.w,
+          duration: 0.5,
+          ease: "back.out(1.4)",
+        });
+      }
+    },
+    { dependencies: [pill] }
+  );
+
+  // Hamburger ↔ close icon cross-fade + rotate.
+  useGSAP(
+    () => {
+      gsap.to(menuIconRef.current, {
+        autoAlpha: mobileOpen ? 0 : 1,
+        rotate: mobileOpen ? 90 : 0,
+        duration: 0.18,
+        ease: "power2.inOut",
+      });
+      gsap.to(closeIconRef.current, {
+        autoAlpha: mobileOpen ? 1 : 0,
+        rotate: mobileOpen ? 0 : -90,
+        duration: 0.18,
+        ease: "power2.inOut",
+      });
+    },
+    { dependencies: [mobileOpen] }
+  );
+
+  // Mount the dropdown when opening; keep it mounted through the exit animation.
+  useEffect(() => {
+    if (mobileOpen) setMenuMounted(true);
+  }, [mobileOpen]);
+
+  // Mobile dropdown enter/exit + staggered items (exit-aware via menuMounted).
+  useGSAP(
+    () => {
+      if (!menuMounted || !dropdownRef.current) return;
+      const el = dropdownRef.current;
+
+      if (mobileOpen) {
+        const items = el.querySelectorAll<HTMLElement>("[data-menu-item]");
+        const tl = gsap.timeline();
+        tl.fromTo(
+          el,
+          { opacity: 0, scale: 0.92, y: -6 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "power2.out" }
+        );
+        tl.fromTo(
+          items,
+          { opacity: 0, x: 8 },
+          { opacity: 1, x: 0, duration: 0.18, stagger: 0.04, ease: "power1.out" },
+          0.05
+        );
+      } else {
+        gsap.to(el, {
+          opacity: 0,
+          scale: 0.92,
+          y: -6,
+          duration: 0.22,
+          ease: "power2.in",
+          onComplete: () => setMenuMounted(false),
+        });
+      }
+    },
+    { dependencies: [mobileOpen, menuMounted] }
+  );
 
   const isPill = scrolled;
 
@@ -160,11 +247,9 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
 
           {/* Single pill — only x/width animate, y is fixed in style to avoid scroll drift */}
           {pill && (
-            <motion.span
+            <span
+              ref={pillRef}
               className="absolute rounded-full pointer-events-none"
-              animate={{ x: pill.x, width: pill.w }}
-              initial={false}
-              transition={{ type: "spring", stiffness: 180, damping: 22, mass: 0.9 }}
               style={{
                 top: 3,
                 bottom: 3,
@@ -266,91 +351,78 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
               color: "var(--text-color)",
             }}
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={mobileOpen ? "close" : "open"}
-                initial={{ rotate: mobileOpen ? -90 : 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: mobileOpen ? 90 : -90, opacity: 0 }}
-                transition={{ duration: 0.18, ease: "easeInOut" }}
-                className="flex items-center justify-center"
-              >
-                {mobileOpen ? <X size={16} /> : <Menu size={16} />}
-              </motion.span>
-            </AnimatePresence>
+            <span
+              ref={menuIconRef}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <Menu size={16} />
+            </span>
+            <span
+              ref={closeIconRef}
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ opacity: 0 }}
+            >
+              <X size={16} />
+            </span>
           </button>
         )}
       </div>
 
       {/* Mobile dropdown — always floating, never changes width on scroll */}
-      <AnimatePresence>
-        {mobileOpen && showLinks && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: -6 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: -6 }}
-            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute top-full md:hidden flex flex-col"
-            style={{
-              transformOrigin: "top right",
-              right: 0,
-              minWidth: 180,
-              marginTop: 8,
-              borderRadius: 16,
-              background: "var(--nav-bg)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              border: "1px solid var(--glass-border)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
-              padding: "8px 0",
-            }}
-          >
-            {config.links.map((link, i) => {
-              const active = isActive(link.href);
-              const href = resolveHref(link.href);
-              const isExternal = isSubdomain && link.href.startsWith("/");
-              const linkStyle: React.CSSProperties = {
-                color: active ? "var(--text-color)" : "var(--text-muted)",
-              };
-              const className = "block px-5 py-2.5 text-sm font-medium transition-colors duration-200";
-              return (
-                <motion.div
-                  key={link.label}
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.04, duration: 0.18, ease: "easeOut" }}
-                >
-                  {isExternal ? (
-                    <a href={href} className={className} style={linkStyle}>
-                      {link.label}
-                    </a>
-                  ) : (
-                    <Link to={link.href} className={className} style={linkStyle}>
-                      {link.label}
-                    </Link>
-                  )}
-                </motion.div>
-              );
-            })}
-            {config.cta && (
-              <motion.div
-                initial={{ opacity: 0, x: 8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: config.links.length * 0.04, duration: 0.18, ease: "easeOut" }}
-                className="px-4 pt-2 pb-1"
+      {menuMounted && showLinks && (
+        <div
+          ref={dropdownRef}
+          className="absolute top-full md:hidden flex flex-col"
+          style={{
+            opacity: 0,
+            transformOrigin: "top right",
+            right: 0,
+            minWidth: 180,
+            marginTop: 8,
+            borderRadius: 16,
+            background: "var(--nav-bg)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid var(--glass-border)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+            padding: "8px 0",
+          }}
+        >
+          {config.links.map((link) => {
+            const active = isActive(link.href);
+            const href = resolveHref(link.href);
+            const isExternal = isSubdomain && link.href.startsWith("/");
+            const linkStyle: React.CSSProperties = {
+              color: active ? "var(--text-color)" : "var(--text-muted)",
+            };
+            const className = "block px-5 py-2.5 text-sm font-medium transition-colors duration-200";
+            return (
+              <div key={link.label} data-menu-item>
+                {isExternal ? (
+                  <a href={href} className={className} style={linkStyle}>
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link to={link.href} className={className} style={linkStyle}>
+                    {link.label}
+                  </Link>
+                )}
+              </div>
+            );
+          })}
+          {config.cta && (
+            <div data-menu-item className="px-4 pt-2 pb-1">
+              <a
+                href={resolveHref(config.cta.href)}
+                className="block text-center text-sm font-semibold text-white rounded-full py-2 transition-all duration-200"
+                style={{ background: "var(--accent-purple)" }}
               >
-                <a
-                  href={resolveHref(config.cta.href)}
-                  className="block text-center text-sm font-semibold text-white rounded-full py-2 transition-all duration-200"
-                  style={{ background: "var(--accent-purple)" }}
-                >
-                  {config.cta.label}
-                </a>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                {config.cta.label}
+              </a>
+            </div>
+          )}
+        </div>
+      )}
     </header>
   );
 };

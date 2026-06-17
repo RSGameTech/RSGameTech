@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTypingEffect } from "@/hooks/useTypingEffect";
-import { motion } from "framer-motion";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { RevealGroup, Reveal } from "@/components/Reveal";
+import { getLenis } from "@/hooks/useSmoothScroll";
 import { ChevronDown } from "lucide-react";
 import config from "@/config/hero";
 import { socials } from "@/config/socials";
@@ -13,6 +15,7 @@ const HeroSection = () => {
   const typedWord = useTypingEffect(words);
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,8 +26,26 @@ const HeroSection = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Fade the scroll indicator out once scrolled (delayed fade-in on load).
+  // overwrite:true kills any pending tween — without it, the delayed 1.5s
+  // fade-in could fire after the fade-out and bring the indicator back.
+  useGSAP(
+    () => {
+      gsap.to(scrollIndicatorRef.current, {
+        opacity: isScrolled ? 0 : 1,
+        duration: isScrolled ? 0.3 : 1,
+        delay: isScrolled ? 0 : 1.5,
+        ease: "power2.out",
+        overwrite: true,
+      });
+    },
+    { dependencies: [isScrolled] }
+  );
+
   const scrollToNextSection = () => {
-    window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(window.innerHeight);
+    else window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
   };
 
   return (
@@ -32,14 +53,12 @@ const HeroSection = () => {
       id="hero"
       className="w-full relative flex flex-col justify-center min-h-[100vh] min-h-[100dvh]"
     >
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
+      <RevealGroup
+        trigger="mount"
         className="flex flex-col gap-5"
       >
         {/* Status badge */}
-        <motion.div variants={revealVariants}>
+        <Reveal>
           <div
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm"
             style={{
@@ -57,11 +76,11 @@ const HeroSection = () => {
             />
             {config.availability ?? "Available for work"}
           </div>
-        </motion.div>
+        </Reveal>
 
         {/* Headline */}
-        <motion.h1
-          variants={revealVariants}
+        <Reveal
+          as="h1"
           className="font-bold leading-[1.1]"
           style={{
             fontSize: "clamp(40px, 7vw, 72px)",
@@ -86,11 +105,11 @@ const HeroSection = () => {
               top: "0.05em",
             }}
           />
-        </motion.h1>
+        </Reveal>
 
         {/* Tagline */}
-        <motion.p
-          variants={revealVariants}
+        <Reveal
+          as="p"
           style={{
             fontSize: 18,
             color: "var(--text-muted)",
@@ -99,11 +118,11 @@ const HeroSection = () => {
           }}
         >
           {config.tagline}
-        </motion.p>
+        </Reveal>
 
         {/* Social links */}
         {socials.some(s => s.showInHero !== false) && (
-          <motion.div variants={revealVariants} className="flex items-center gap-2">
+          <Reveal className="flex items-center gap-2">
             {socials.filter(s => s.showInHero !== false).map((s) => (
               <a
                 key={s.label}
@@ -132,23 +151,21 @@ const HeroSection = () => {
                 {s.label}
               </a>
             ))}
-          </motion.div>
+          </Reveal>
         )}
 
-      </motion.div>
+      </RevealGroup>
 
       {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isScrolled ? 0 : 1 }}
-        transition={{ delay: isScrolled ? 0 : 1.5, duration: isScrolled ? 0.3 : 1 }}
+      <div
+        ref={scrollIndicatorRef}
+        style={{ opacity: 0, pointerEvents: isScrolled ? "none" : "auto" }}
         className="fixed bottom-8 left-1/2 -translate-x-1/2 cursor-pointer flex flex-col items-center gap-2 text-[var(--text-muted)] hover:text-[var(--text-color)] transition-colors z-10"
-        style={{ pointerEvents: isScrolled ? "none" : "auto" }}
         onClick={scrollToNextSection}
       >
         <span className="text-[10px] uppercase tracking-[0.2em] font-medium">Scroll</span>
         <ChevronDown size={20} className="animate-bounce" />
-      </motion.div>
+      </div>
     </section>
   );
 };

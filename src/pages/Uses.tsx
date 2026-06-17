@@ -1,8 +1,7 @@
-import { motion } from "framer-motion";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import FooterSection from "@/components/FooterSection";
 import { Card } from "@/components/ui/card";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import { hslToHex } from "@/lib/utils";
 import config from "@/config/uses";
 import {
@@ -135,29 +134,24 @@ const Uses = () => {
 
   return (
     <main className="flex flex-col gap-4 px-4 max-w-2xl mx-auto min-h-screen pt-[90px]">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="flex flex-col gap-4"
-      >
-        <motion.div variants={revealVariants} className="mb-2">
+      <RevealGroup trigger="mount" className="flex flex-col gap-4">
+        <Reveal className="mb-2">
           <h1 className="text-3xl font-bold text-foreground">{config.title ?? "Uses"}</h1>
           {config.subtitle && (
             <p className="text-muted-foreground mt-1 text-sm">{config.subtitle}</p>
           )}
-        </motion.div>
+        </Reveal>
         {config.groups.map((group) => (
-          <motion.div key={group.title} variants={revealVariants}>
+          <Reveal key={group.title}>
             <UsesGroupCard
               group={group}
               primaryDevices={
                 group.title === "Hardware" ? config.primaryDevices : undefined
               }
             />
-          </motion.div>
+          </Reveal>
         ))}
-      </motion.div>
+      </RevealGroup>
       <FooterSection />
     </main>
   );

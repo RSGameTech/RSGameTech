@@ -1,9 +1,8 @@
-import { motion } from "framer-motion";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import FooterSection from "@/components/FooterSection";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import { ChevronRight, Link as LinkIcon, Github, Twitter, Globe, BookOpen, FileText, LifeBuoy } from "lucide-react";
 import config from "@/config/links";
 import type { LinksConfig } from "@/config/links";
@@ -56,23 +55,18 @@ const Links = () => {
 
   return (
     <main className="flex flex-col gap-3 px-4 max-w-md mx-auto min-h-screen pb-[20px] pt-[70px]">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="flex flex-col gap-3"
-      >
+      <RevealGroup trigger="mount" className="flex flex-col gap-3">
         {config.title && (
-          <motion.h1 variants={revealVariants} className="text-3xl font-bold text-foreground text-center mb-2">
+          <Reveal as="h1" className="text-3xl font-bold text-foreground text-center mb-2">
             {config.title}
-          </motion.h1>
+          </Reveal>
         )}
         {config.groups.map((group) => (
-          <motion.div key={group.title} variants={revealVariants}>
+          <Reveal key={group.title}>
             <LinkGroup group={group} />
-          </motion.div>
+          </Reveal>
         ))}
-      </motion.div>
+      </RevealGroup>
       <FooterSection />
     </main>
   );

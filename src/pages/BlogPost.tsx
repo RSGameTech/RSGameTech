@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import FooterSection from "@/components/FooterSection";
 import GlassContainer from "@/components/GlassContainer";
 import ResponsiveImage from "@/components/ResponsiveImage";
@@ -10,7 +10,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import type { BlogPost } from "@/hooks/useBlogPosts";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 
@@ -47,8 +46,8 @@ const BlogPostPage = () => {
           </div>
         </GlassContainer>
       ) : notFound ? (
-        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-          <motion.div variants={revealVariants}>
+        <RevealGroup trigger="mount">
+          <Reveal>
             <GlassContainer className="text-center py-16 px-8">
               <h1 className="text-2xl font-bold text-foreground mb-4">Post Not Found</h1>
               <p className="text-muted-foreground mb-6">The blog post you're looking for doesn't exist.</p>
@@ -58,28 +57,23 @@ const BlogPostPage = () => {
                 </Link>
               </Button>
             </GlassContainer>
-          </motion.div>
-        </motion.div>
+          </Reveal>
+        </RevealGroup>
       ) : post ? (
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col gap-6"
-        >
+        <RevealGroup trigger="mount" className="flex flex-col gap-6">
           {/* Featured Image */}
           {post.featuredImage && (
-            <motion.div variants={revealVariants}>
+            <Reveal>
               <GlassContainer className="overflow-hidden p-0 rounded-xl">
                 <div className="aspect-video">
                   <ResponsiveImage src={post.featuredImage} alt={post.title} priority={true} className="w-full h-full object-cover rounded-xl" />
                 </div>
               </GlassContainer>
-            </motion.div>
+            </Reveal>
           )}
 
           {/* Post Header */}
-          <motion.div variants={revealVariants}>
+          <Reveal>
             <GlassContainer className="p-6 md:p-8">
               <div className="mb-4">
                 <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-4 py-2 text-sm text-muted-foreground hover:text-foreground mb-6">
@@ -110,10 +104,10 @@ const BlogPostPage = () => {
                 <post.component components={{ img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <ResponsiveImage src={props.src!} alt={props.alt || ""} className="rounded-xl shadow-sm my-8" {...props} /> }} />
               </article>
             </GlassContainer>
-          </motion.div>
+          </Reveal>
 
           {/* Navigation */}
-          <motion.div variants={revealVariants}>
+          <Reveal>
             <GlassContainer className="text-center py-8">
               <Button variant="ghost" asChild className="glass-inner glow-container rounded-full px-6 py-2.5 text-sm text-muted-foreground hover:text-foreground">
                 <Link to="/blogs">
@@ -121,8 +115,8 @@ const BlogPostPage = () => {
                 </Link>
               </Button>
             </GlassContainer>
-          </motion.div>
-        </motion.div>
+          </Reveal>
+        </RevealGroup>
       ) : null}
 
       <FooterSection />

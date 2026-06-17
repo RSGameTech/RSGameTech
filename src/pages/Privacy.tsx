@@ -1,18 +1,11 @@
-import { motion } from "framer-motion";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import FooterSection from "@/components/FooterSection";
 import PrivacyContent from "@/content/privacy.mdx";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
 
 const Privacy = () => (
   <main className="flex flex-col gap-6 px-4 max-w-2xl mx-auto min-h-screen pt-[90px]">
-    <motion.div
-      variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
-      className="flex flex-col gap-6"
-    >
-      <motion.div
-        variants={revealVariants}
+    <RevealGroup trigger="mount" className="flex flex-col gap-6">
+      <Reveal
         className="rounded-2xl p-6 md:p-8"
         style={{
           background: "var(--glass)",
@@ -33,8 +26,8 @@ const Privacy = () => (
         >
           <PrivacyContent />
         </div>
-      </motion.div>
-    </motion.div>
+      </Reveal>
+    </RevealGroup>
     <FooterSection />
   </main>
 );

@@ -1,26 +1,14 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import TiltCard from "@/components/TiltCard";
 import config from "@/config/testimonials";
 
 const TestimonialsSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   if (config.items.length === 0) return null;
 
   return (
     <section id="testimonials" className="w-full flex flex-col justify-center relative py-5">
-      <motion.div
-        ref={ref}
-        variants={staggerContainer}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        className="flex flex-col gap-8"
-      >
-        <motion.div variants={revealVariants}>
+      <RevealGroup className="flex flex-col gap-8">
+        <Reveal>
           <h2
             className="font-bold"
             style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
@@ -30,11 +18,11 @@ const TestimonialsSection = () => {
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             {config.subheading}
           </p>
-        </motion.div>
+        </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
           {config.items.map((t, i) => (
-            <motion.div key={i} variants={revealVariants} className="h-full">
+            <Reveal key={i} className="h-full">
               <TiltCard
                 className="rounded-2xl p-4 md:p-6 h-full flex flex-col gap-4 md:gap-5"
                 style={{
@@ -85,10 +73,10 @@ const TestimonialsSection = () => {
                   </div>
                 </div>
               </TiltCard>
-            </motion.div>
+            </Reveal>
           ))}
         </div>
-      </motion.div>
+      </RevealGroup>
     </section>
   );
 };

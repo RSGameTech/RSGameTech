@@ -1,5 +1,8 @@
-import { motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
 
 // ── Viewport hook ──────────────────────────────────────────────────────────────
 function useViewport() {
@@ -24,6 +27,23 @@ function useViewport() {
   }, []);
 
   return viewport;
+}
+
+// ── Reduced-motion hook ──────────────────────────────────────────────────────────
+function useReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(
+    typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  return reduced;
 }
 
 // ── Waypoint generator ─────────────────────────────────────────────────────────
@@ -65,10 +85,6 @@ function randomWaypoints(
   };
 }
 
-function evenTimes(n: number): number[] {
-  return Array.from({ length: n }, (_, i) => i / (n - 1));
-}
-
 // ── Orb definitions ────────────────────────────────────────────────────────────
 const ORB_BASE: React.CSSProperties = {
   position: "absolute",
@@ -97,27 +113,46 @@ interface OrbProps {
 }
 
 const Orb = ({ color, orbPx, blur, reducedMotion, vw, vh }: OrbProps) => {
-  const [wp, setWp] = useState<Waypoints>(() =>
-    randomWaypoints(6, vw, vh, orbPx)
+  const ref = useRef<HTMLDivElement>(null);
+  const wpRef = useRef<Waypoints>(randomWaypoints(6, vw, vh, orbPx));
+
+  useGSAP(
+    (_context, contextSafe) => {
+      const el = ref.current;
+      if (!el) return;
+
+      // Fresh random path on (re)mount and whenever the viewport changes.
+      wpRef.current = randomWaypoints(6, vw, vh, orbPx);
+      gsap.set(el, { x: wpRef.current.xs[0], y: wpRef.current.ys[0] });
+
+      if (reducedMotion) return;
+
+      // Wander through the waypoints, then re-seed from the final position for
+      // seamless, never-repeating drift. contextSafe keeps each cycle's tween
+      // tracked so it's reverted on unmount/resize.
+      const run = contextSafe!(() => {
+        const wp = wpRef.current;
+        gsap.to(el, {
+          keyframes: { x: wp.xs, y: wp.ys, ease: "sine.inOut" },
+          duration: wp.duration,
+          ease: "none",
+          onComplete: () => {
+            const lastX = wp.xs[wp.xs.length - 1];
+            const lastY = wp.ys[wp.ys.length - 1];
+            wpRef.current = randomWaypoints(6, vw, vh, orbPx, lastX, lastY);
+            run();
+          },
+        });
+      });
+
+      run();
+    },
+    { dependencies: [vw, vh, reducedMotion, orbPx] }
   );
 
-  // Re-seed when viewport resizes (orbs get a fresh random path)
-  useEffect(() => {
-    setWp(randomWaypoints(6, vw, vh, orbPx));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vw, vh]);
-
-  // On each cycle completion, start a new path from where we ended — seamless
-  const handleComplete = useCallback(() => {
-    if (!reducedMotion) {
-      const lastX = wp.xs[wp.xs.length - 1];
-      const lastY = wp.ys[wp.ys.length - 1];
-      setWp(randomWaypoints(6, vw, vh, orbPx, lastX, lastY));
-    }
-  }, [wp, reducedMotion, vw, vh, orbPx]);
-
   return (
-    <motion.div
+    <div
+      ref={ref}
       className="ambient-orb"
       style={{
         ...ORB_BASE,
@@ -126,21 +161,6 @@ const Orb = ({ color, orbPx, blur, reducedMotion, vw, vh }: OrbProps) => {
         background: color,
         filter: `blur(${blur}px)`,
       }}
-      animate={
-        reducedMotion
-          ? { x: wp.xs[0], y: wp.ys[0] }
-          : { x: wp.xs, y: wp.ys }
-      }
-      transition={
-        reducedMotion
-          ? { duration: 0 }
-          : {
-              duration: wp.duration,
-              ease: "easeInOut",
-              times: evenTimes(wp.xs.length),
-            }
-      }
-      onAnimationComplete={handleComplete}
     />
   );
 };
@@ -148,7 +168,7 @@ const Orb = ({ color, orbPx, blur, reducedMotion, vw, vh }: OrbProps) => {
 // ── AmbientOrbs ────────────────────────────────────────────────────────────────
 const AmbientOrbs = () => {
   const { w, h } = useViewport();
-  const reducedMotion = useReducedMotion() ?? false;
+  const reducedMotion = useReducedMotion();
   const mobile = w < 768;
   const visibleOrbs = mobile ? ORBS.slice(0, 3) : ORBS;
   const blur = mobile ? 90 : 120;

@@ -101,7 +101,7 @@ export default defineConfig(({ mode }) => ({
             },
             {
               name: "vendor-ui",
-              test: /[\\/]node_modules[\\/](@radix-ui|class-variance-authority|clsx|tailwind-merge|framer-motion|lucide-react)[\\/]/,
+              test: /[\\/]node_modules[\\/](@radix-ui|class-variance-authority|clsx|tailwind-merge|gsap|@gsap|lenis|lucide-react)[\\/]/,
               priority: 20,
             },
             {

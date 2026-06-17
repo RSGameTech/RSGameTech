@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import { useMouseGlow } from "@/hooks/useMouseGlow";
 import FooterSection from "@/components/FooterSection";
 import { ArrowUpRight, Github, ArrowLeft } from "lucide-react";
@@ -17,14 +16,9 @@ const Projects = () => {
 
   return (
     <main className="flex flex-col w-full max-w-4xl mx-auto px-4 pt-[70px]">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="flex flex-col gap-8 py-10"
-      >
+      <RevealGroup trigger="mount" className="flex flex-col gap-8 py-10">
         {/* Back link */}
-        <motion.div variants={revealVariants}>
+        <Reveal>
           <Link
             to="/"
             className="inline-flex items-center gap-1.5 text-sm transition-colors"
@@ -34,10 +28,10 @@ const Projects = () => {
           >
             <ArrowLeft size={14} /> Back to home
           </Link>
-        </motion.div>
+        </Reveal>
 
         {/* Heading */}
-        <motion.div variants={revealVariants}>
+        <Reveal>
           <h1
             className="font-bold"
             style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
@@ -47,14 +41,14 @@ const Projects = () => {
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             {config.subheading}
           </p>
-        </motion.div>
+        </Reveal>
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {config.items.map((project, i) => {
             const st = project.status ? statusStyles[project.status] : null;
             return (
-              <motion.div key={i} variants={revealVariants} className="h-full">
+              <Reveal key={i} className="h-full">
                 <div
                   className="rounded-2xl h-full flex flex-col overflow-hidden"
                   style={{
@@ -177,11 +171,11 @@ const Projects = () => {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </Reveal>
             );
           })}
         </div>
-      </motion.div>
+      </RevealGroup>
 
       <FooterSection />
     </main>

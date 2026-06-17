@@ -1,7 +1,5 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import { ArrowUpRight, Github } from "lucide-react";
 import config from "@/config/projects";
 
@@ -12,9 +10,6 @@ const statusStyles: Record<string, { label: string; bg: string; dot: string }> =
 };
 
 const ProjectsSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   const featured = config.items.filter((p) => p.featured);
 
   if (featured.length === 0) return null;
@@ -26,14 +21,8 @@ const ProjectsSection = () => {
 
   return (
     <section id="projects" className="w-full flex flex-col justify-center relative py-5">
-      <motion.div
-        ref={ref}
-        variants={staggerContainer}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        className="flex flex-col gap-4"
-      >
-        <motion.div variants={revealVariants}>
+      <RevealGroup className="flex flex-col gap-4">
+        <Reveal>
           <h2
             className="font-bold"
             style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
@@ -43,14 +32,14 @@ const ProjectsSection = () => {
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             {config.subheading}
           </p>
-        </motion.div>
+        </Reveal>
 
         <div className={featured.length === 1 ? "flex justify-center" : undefined}>
           <div className={gridClass}>
           {featured.map((project, i) => {
             const st = project.status ? statusStyles[project.status] : null;
             return (
-              <motion.div key={i} variants={revealVariants} className="h-full">
+              <Reveal key={i} className="h-full">
                 <div
                   className="rounded-2xl h-full flex flex-col overflow-hidden"
                   style={{
@@ -170,13 +159,13 @@ const ProjectsSection = () => {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </Reveal>
             );
           })}
           </div>
         </div>
         {/* View all CTA */}
-        <motion.div variants={revealVariants}>
+        <Reveal>
           <Link
             to="/projects"
             className="flex items-center justify-center gap-1.5 w-full py-3 rounded-2xl text-sm font-medium transition-all duration-200"
@@ -198,8 +187,8 @@ const ProjectsSection = () => {
           >
             View all projects <ArrowUpRight size={14} />
           </Link>
-        </motion.div>
-      </motion.div>
+        </Reveal>
+      </RevealGroup>
     </section>
   );
 };

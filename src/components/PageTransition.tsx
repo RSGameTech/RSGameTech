@@ -1,19 +1,71 @@
-import { motion } from "framer-motion";
+import { useRef, useState, type ReactNode } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { getLenis } from "@/hooks/useSmoothScroll";
 
 interface PageTransitionProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  /** Changes whenever the route changes — drives the exit/enter sequence. */
+  locationKey: string;
 }
 
-const PageTransition = ({ children }: PageTransitionProps) => (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -10 }}
-    transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
-    style={{ width: "100%" }}
-  >
-    {children}
-  </motion.div>
-);
+/**
+ * Exit-aware route transition. Holds a snapshot of the current page, fades it
+ * out on navigation, swaps in the new page (scrolling to top), then fades it
+ * in — the GSAP replacement for framer-motion's AnimatePresence. Honours
+ * prefers-reduced-motion by swapping instantly.
+ */
+const PageTransition = ({ children, locationKey }: PageTransitionProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [displayChildren, setDisplayChildren] = useState<ReactNode>(children);
+  const [displayKey, setDisplayKey] = useState(locationKey);
+
+  useGSAP(
+    (_context, contextSafe) => {
+      // First render / no actual route change — nothing to animate. Each page's
+      // own RevealGroup handles its initial reveal.
+      if (locationKey === displayKey) return;
+
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const swap = () => {
+        setDisplayChildren(children);
+        setDisplayKey(locationKey);
+        getLenis()?.scrollTo(0, { immediate: true });
+      };
+
+      if (reduce) {
+        swap();
+        return;
+      }
+
+      const enter = contextSafe?.(() => {
+        gsap.fromTo(
+          containerRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }
+        );
+      });
+
+      gsap.to(containerRef.current, {
+        opacity: 0,
+        y: -10,
+        duration: 0.18,
+        ease: "power1.in",
+        onComplete: () => {
+          swap();
+          enter?.();
+        },
+      });
+    },
+    { dependencies: [locationKey] }
+  );
+
+  return (
+    <div ref={containerRef} style={{ width: "100%" }}>
+      {displayChildren}
+    </div>
+  );
+};
 
 export default PageTransition;

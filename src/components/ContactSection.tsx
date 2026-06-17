@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Copy, Check, Send, Mail } from "lucide-react";
-import { staggerContainer, revealVariants } from "@/hooks/useScrollReveal";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/button";
 import SocialIcon from "@/components/SocialIcon";
 import { socials } from "@/config/socials";
@@ -12,12 +13,17 @@ import { submitDevluneForm } from "@/lib/devluneForm";
 
 // ── Validation ───────────────────────────────────────────────────────────────
 
+const MESSAGE_MAX = 2000;
+
 const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Enter a valid email address"),
   subject: z.string().optional(),
   topic: z.string().optional(),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  message: z
+    .string()
+    .min(10, "Message must be at least 10 characters")
+    .max(MESSAGE_MAX, `Message must be ${MESSAGE_MAX} characters or less`),
 });
 
 // ── Tiny local helpers ────────────────────────────────────────────────────────
@@ -68,13 +74,42 @@ const initialFields = {
 };
 
 const ContactSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [fields, setFields] = useState(initialFields);
   const [copied, setCopied] = useState(false);
+
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const messageMinHeight = useRef(0);
+
+  // Auto-grow the message field to fit its content, smoothly tweening the height
+  // with GSAP. Re-runs whenever the message changes (typing, paste, reset).
+  useGSAP(
+    () => {
+      const el = messageRef.current;
+      if (!el) return;
+
+      // Capture the default (rows-based) height once as the minimum.
+      if (!messageMinHeight.current) messageMinHeight.current = el.offsetHeight;
+
+      const cs = getComputedStyle(el);
+      const borderY =
+        parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+
+      const prev = el.offsetHeight;
+      el.style.height = "auto"; // collapse to measure true content height
+      const target = Math.max(el.scrollHeight + borderY, messageMinHeight.current);
+      el.style.height = `${prev}px`; // restore so GSAP animates from the current height
+
+      gsap.to(el, {
+        height: target,
+        duration: 0.25,
+        ease: "power2.out",
+        overwrite: true,
+      });
+    },
+    { dependencies: [fields.message] }
+  );
 
   const set =
     (key: string) =>
@@ -135,15 +170,9 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="w-full flex flex-col justify-center relative py-5">
-      <motion.div
-        ref={ref}
-        variants={staggerContainer}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        className="flex flex-col gap-8"
-      >
+      <RevealGroup className="flex flex-col gap-8">
         {/* ── Heading ── */}
-        <motion.div variants={revealVariants}>
+        <Reveal>
           <h2
             className="font-bold"
             style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
@@ -153,10 +182,10 @@ const ContactSection = () => {
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             {contactConfig.subtitle}
           </p>
-        </motion.div>
+        </Reveal>
 
         {/* ── Glass card ── */}
-        <motion.div variants={revealVariants}>
+        <Reveal>
           <div
             className="rounded-2xl p-5 md:p-7"
             style={{
@@ -268,16 +297,31 @@ const ContactSection = () => {
                 <div>
                   <Label>Message *</Label>
                   <textarea
+                    ref={messageRef}
                     name="message"
                     placeholder="Your message…"
                     value={fields.message}
                     onChange={set("message")}
                     rows={5}
+                    maxLength={MESSAGE_MAX}
                     disabled={isSending}
                     className={inputCls}
-                    style={{ ...inputStyle, resize: "vertical" as const }}
+                    style={{ ...inputStyle, resize: "none" as const, overflow: "hidden" }}
                   />
-                  <FieldError msg={errors.message} />
+                  <div className="flex items-center justify-between mt-1">
+                    <FieldError msg={errors.message} />
+                    <span
+                      className="text-[11px] ml-auto tabular-nums"
+                      style={{
+                        color:
+                          fields.message.length >= MESSAGE_MAX
+                            ? "oklch(0.65 0.2 25)"
+                            : "var(--text-dim)",
+                      }}
+                    >
+                      {fields.message.length} / {MESSAGE_MAX}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Submit */}
@@ -392,8 +436,8 @@ const ContactSection = () => {
               </div>
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+        </Reveal>
+      </RevealGroup>
     </section>
   );
 };

@@ -1,7 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { revealVariants, staggerContainer } from "@/hooks/useScrollReveal";
+import { RevealGroup, Reveal } from "@/components/Reveal";
 import config from "@/config/about";
 import AboutContent from "@/content/about.mdx";
 
@@ -9,16 +6,13 @@ import AboutContent from "@/content/about.mdx";
 const SHOW_ABOUT_STATS = false;
 
 const AboutSection = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   const photoSrc = config.photo || "/avatar-alt.jpg";
 
   return (
     <section id="about" className="w-full flex flex-col justify-center relative py-5">
-      <motion.div ref={ref} variants={staggerContainer} initial="hidden" animate={inView ? "visible" : "hidden"} className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-5 md:items-center">
+      <RevealGroup className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-5 md:items-center">
         {/* Photo / placeholder */}
-        <motion.div variants={revealVariants} className="relative mx-auto flex-shrink-0 self-center" style={{ width: 304, height: 304 }}>
+        <Reveal className="relative mx-auto flex-shrink-0 self-center" style={{ width: 304, height: 304 }}>
           {/* Photo — centered within the frame container */}
           <div
             className="absolute overflow-hidden rounded-full shadow-lg"
@@ -33,10 +27,10 @@ const AboutSection = () => {
           </div>
           {/* Frame fills the 304px container — no scale needed */}
           <img src="/ayaka-frame.webp" alt="" className="pointer-events-none absolute inset-0 z-10 w-full h-full object-contain" />
-        </motion.div>
+        </Reveal>
 
         {/* Text + stats */}
-        <motion.div variants={revealVariants} className="flex flex-col justify-center gap-4">
+        <Reveal className="flex flex-col justify-center gap-4">
           <h2 className="font-bold" style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}>
             {config.heading}
           </h2>
@@ -74,8 +68,8 @@ const AboutSection = () => {
               ))}
             </div>
           )}
-        </motion.div>
-      </motion.div>
+        </Reveal>
+      </RevealGroup>
     </section>
   );
 };

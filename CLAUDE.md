@@ -29,7 +29,7 @@ This is a **personal portfolio website** built with React 18 + TypeScript + Vite
 - **Tailwind CSS 3** with shadcn/ui (Radix UI primitives) — configured via `components.json`, components live in `src/components/ui/`
 - **React Router v6** with lazy-loaded pages and subdomain routing (`links.rsgametech.me`, `blogs.rsgametech.me`)
 - **TanStack React Query** for async state management
-- **Framer Motion** for scroll-reveal animations
+- **GSAP** (with `@gsap/react`'s `useGSAP` hook + ScrollTrigger) for scroll-reveal and all other animations; **Lenis** for smooth scrolling (synced to GSAP's ticker/ScrollTrigger in `useSmoothScroll`)
 - **Vitest** with jsdom for testing, **sharp** for image optimization
 
 ### Path Alias
@@ -75,7 +75,7 @@ Every page follows: `DotGridBackground` (fixed) → `Navbar` (fixed) → `main` 
 
 Manual chunk splitting in `vite.config.ts` via `rollupOptions.output.manualChunks`:
 - `vendor-react` — react, react-dom, react-router-dom
-- `vendor-ui` — all Radix UI primitives, CVA, clsx, tailwind-merge, framer-motion, lucide-react
+- `vendor-ui` — all Radix UI primitives, CVA, clsx, tailwind-merge, gsap, @gsap/react, lenis, lucide-react
 - `vendor-utils` — date-fns, zod, react-hook-form
 
 ### Deployment
