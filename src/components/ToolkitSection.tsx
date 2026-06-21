@@ -1,20 +1,15 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { Draggable } from "gsap/Draggable";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
 import { hslToHex } from "@/lib/utils";
 import TiltCard from "@/components/TiltCard";
 import config from "@/config/toolkit";
 import { RevealGroup, Reveal } from "@/components/Reveal";
-import {
-  Code,
-  Terminal,
-  Database,
-  Cpu,
-  Globe,
-  Server,
-  Layout,
-  Smartphone,
-  Cloud,
-  type LucideIcon as LucideIconType,
-} from "lucide-react";
+import { Code, Terminal, Database, Cpu, Globe, Server, Layout, Smartphone, Cloud, type LucideIcon as LucideIconType } from "lucide-react";
+
+gsap.registerPlugin(useGSAP, Draggable, InertiaPlugin);
 
 const iconMap: Record<string, LucideIconType> = {
   code: Code,
@@ -30,186 +25,141 @@ const iconMap: Record<string, LucideIconType> = {
 
 function LucideIcon({ name, className, style }: { name: string; className?: string; style?: React.CSSProperties }) {
   const normalizedName = name.toLowerCase().replace(/[-_\s]/g, "");
-  const key = Object.keys(iconMap).find(
-    (k) => k.toLowerCase().replace(/[-_\s]/g, "") === normalizedName
-  );
+  const key = Object.keys(iconMap).find((k) => k.toLowerCase().replace(/[-_\s]/g, "") === normalizedName);
   if (!key) return <div className={className} style={{ ...style, width: 32, height: 32 }} />;
   const Icon = iconMap[key];
   return <Icon className={className} style={style} size={32} />;
 }
 
-// Reads the real-time translateX from the browser's computed style matrix (works mid-animation).
-function getTranslateX(el: HTMLElement): number {
-  const t = getComputedStyle(el).transform;
-  if (!t || t === "none") return 0;
-  return new DOMMatrix(t).m41;
-}
-
-type ToolkitItem = typeof config.items[0];
+type ToolkitItem = (typeof config.items)[0];
 
 function MarqueeTile({ item }: { item: ToolkitItem }) {
   return (
     <div style={{ flexShrink: 0 }} className="w-[120px] md:w-[128px] aspect-[4/3]">
-      <TiltCard
-        className="tech-tile rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-full cursor-default"
-        style={{ "--tile-tint": item.tint } as React.CSSProperties}
-      >
-        {item.iconLib === "lucide" ? (
-          <LucideIcon
-            name={item.slug}
-            className="tile-icon w-8 h-8"
-            style={{ color: `hsl(${item.tint})` }}
-          />
-        ) : (
-          <img
-            src={`https://cdn.simpleicons.org/${item.slug}/${hslToHex(item.tint)}`}
-            alt={item.name}
-            className="tile-icon w-8 h-8"
-            draggable={false}
-            loading="lazy"
-          />
-        )}
-        <span className="text-xs font-medium text-foreground text-center leading-tight">
-          {item.name}
-        </span>
+      <TiltCard className="tech-tile rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-full cursor-default" style={{ "--tile-tint": item.tint } as React.CSSProperties}>
+        {item.iconLib === "lucide" ? <LucideIcon name={item.slug} className="tile-icon w-8 h-8" style={{ color: `hsl(${item.tint})` }} /> : <img src={`https://cdn.simpleicons.org/${item.slug}/${hslToHex(item.tint)}`} alt={item.name} className="tile-icon w-8 h-8" draggable={false} loading="lazy" />}
+        <span className="text-xs font-medium text-foreground text-center leading-tight">{item.name}</span>
       </TiltCard>
     </div>
   );
 }
 
-function MarqueeRow({
-  items,
-  direction,
-  duration = 25,
-}: {
-  items: ToolkitItem[];
-  direction: "left" | "right";
-  duration?: number;
-}) {
+function MarqueeRow({ items, direction, duration = 25 }: { items: ToolkitItem[]; direction: "left" | "right"; duration?: number }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  // All mutable drag state in one ref — no re-renders triggered
-  const drag = useRef({ active: false, startX: 0, startTX: 0, halfWidth: 0 });
-  const isHovered = useRef(false);
+  // Shared between the GSAP setup below and the React hover handlers —
+  // `sync` re-evaluates play/pause from the latest hovered/interacting flags.
+  const state = useRef({ hovered: false, interacting: false, sync: () => {} });
 
-  const animName = direction === "left" ? "marquee-left" : "marquee-right";
-  // Full animation shorthand used both at mount and when restoring after drag
-  const buildAnim = (delaySec: number) =>
-    `${animName} ${duration}s linear ${delaySec}s infinite`;
+  useGSAP(
+    () => {
+      const track = trackRef.current;
+      const container = containerRef.current;
+      if (!track || !container) return;
 
-  useEffect(() => {
-    const move = (clientX: number) => {
-      if (!drag.current.active || !trackRef.current) return;
-      const { startX, startTX, halfWidth } = drag.current;
-      let newX = startTX + (clientX - startX);
-      // Wrap to stay inside the valid loop window [-halfWidth, 0)
-      if (halfWidth > 0) {
-        newX = ((newX % halfWidth) + halfWidth) % halfWidth - halfWidth;
-      }
-      trackRef.current.style.transform = `translateX(${newX}px)`;
-    };
+      // One of the two MarqueeRow instances (desktop vs. mobile breakpoint)
+      // is always `display:none` at any given viewport — Tailwind's `hidden`
+      // doesn't unmount it — so scrollWidth reads 0 until it's actually shown.
+      // Defer setup until the row has real layout.
+      const init = () => {
+        const halfWidth = track.scrollWidth / 2;
+        if (halfWidth === 0) return false;
 
-    const end = () => {
-      if (!drag.current.active || !trackRef.current) return;
-      const el = trackRef.current;
-      drag.current.active = false;
-      document.body.style.cursor = "";
+        const fromX = direction === "left" ? 0 : -halfWidth;
+        const toX = direction === "left" ? -halfWidth : 0;
+        gsap.set(track, { x: fromX });
 
-      const currentX = getTranslateX(el);
-      const { halfWidth } = drag.current;
+        // Content is duplicated (see `track` below), so looping fromX -> toX
+        // over one set's width is a seamless infinite scroll.
+        const tween = gsap.to(track, { x: toX, duration, ease: "none", repeat: -1 });
 
-      if (halfWidth === 0) {
-        el.style.animation = buildAnim(0);
-        el.style.transform = "";
-        return;
-      }
+        state.current.sync = () => {
+          if (state.current.interacting) return;
+          if (state.current.hovered) tween.pause();
+          else tween.play();
+        };
 
-      // Normalise into [-halfWidth, 0) → one full loop cycle
-      let norm = currentX % halfWidth;
-      if (norm > 0) norm -= halfWidth;
+        // Re-wrap into the loop window during drag/throw — content repeats,
+        // so jumping by one set's width is invisible to the eye.
+        function wrap(this: Draggable) {
+          if (this.x > 0) this.x -= halfWidth;
+          else if (this.x <= -halfWidth) this.x += halfWidth;
+        }
 
-      const progress = Math.abs(norm) / halfWidth;
-      // Negative delay makes the animation start partway through
-      const delay =
-        direction === "left"
-          ? -(progress * duration)
-          : -((1 - progress) * duration);
+        const resync = () => {
+          state.current.interacting = false;
+          const x = gsap.getProperty(track, "x") as number;
+          let norm = x % halfWidth;
+          if (norm > 0) norm -= halfWidth;
+          gsap.set(track, { x: norm });
+          const progress = direction === "left" ? -norm / halfWidth : (norm + halfWidth) / halfWidth;
+          tween.progress(progress % 1);
+          state.current.sync();
+        };
 
-      // Restore animation at the exact release position, clear inline transform
-      el.style.animation = buildAnim(delay);
-      el.style.transform = "";
+        Draggable.create(track, {
+          type: "x",
+          inertia: true,
+          // Tame both the live drag (moves slower than the pointer) and the
+          // post-release momentum (decelerates faster, travels less).
+          dragResistance: 0.5,
+          throwResistance: 4000,
+          cursor: "grab",
+          activeCursor: "grabbing",
+          onPress() {
+            state.current.interacting = true;
+            tween.pause();
+          },
+          onDrag: wrap,
+          onThrowUpdate: wrap,
+          onDragEnd() {
+            if (!this.isThrowing) resync();
+          },
+          onThrowComplete: resync,
+        });
+        return true;
+      };
 
-      // Re-apply hover-pause if the pointer never left while dragging
-      if (isHovered.current) {
-        el.style.animationPlayState = "paused";
-      }
-    };
+      const mm = gsap.matchMedia();
 
-    const onMouseMove = (e: MouseEvent) => move(e.clientX);
-    const onTouchMove = (e: TouchEvent) => move(e.touches[0].clientX);
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(track, { x: 0 });
+      });
 
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", end);
-    document.addEventListener("touchmove", onTouchMove);
-    document.addEventListener("touchend", end);
-    return () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", end);
-      document.removeEventListener("touchmove", onTouchMove);
-      document.removeEventListener("touchend", end);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [direction, duration]);
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        if (init()) return;
+        const ro = new ResizeObserver(() => {
+          if (init()) ro.disconnect();
+        });
+        ro.observe(container);
+        return () => ro.disconnect();
+      });
+    },
+    { scope: containerRef, dependencies: [direction, duration] },
+  );
 
-  const startDrag = (clientX: number) => {
-    const el = trackRef.current;
-    if (!el) return;
-    // Read the live animated position BEFORE disabling the animation
-    const currentTX = getTranslateX(el);
-    drag.current = {
-      active: true,
-      startX: clientX,
-      startTX: currentTX,
-      halfWidth: el.scrollWidth / 2,
-    };
-    // Setting animation:"none" lets our inline transform take full control —
-    // simply pausing still leaves the animation origin overriding the inline value.
-    el.style.animation = "none";
-    el.style.transform = `translateX(${currentTX}px)`;
-    document.body.style.cursor = "grabbing";
-  };
-
-  // Hover-pause is JS-driven because the JSX inline `animation` shorthand
-  // bakes in animation-play-state:running, making a CSS :hover rule ineffective.
   const handleMouseEnter = () => {
-    isHovered.current = true;
-    if (!drag.current.active && trackRef.current) {
-      trackRef.current.style.animationPlayState = "paused";
-    }
+    state.current.hovered = true;
+    state.current.sync();
   };
 
   const handleMouseLeave = () => {
-    isHovered.current = false;
-    if (!drag.current.active && trackRef.current) {
-      trackRef.current.style.animationPlayState = "running";
-    }
+    state.current.hovered = false;
+    state.current.sync();
   };
 
   const track = [...items, ...items];
 
   return (
     <div
+      ref={containerRef}
       className="marquee-container relative overflow-hidden select-none cursor-grab"
       style={{
-        maskImage:
-          "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
+        maskImage: "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
       }}
-      onMouseDown={(e) => startDrag(e.clientX)}
-      onTouchStart={(e) => startDrag(e.touches[0].clientX)}
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+      onMouseLeave={handleMouseLeave}>
       {/* Left edge blur */}
       <div
         className="absolute inset-y-0 left-0 z-10 w-24 pointer-events-none"
@@ -231,11 +181,7 @@ function MarqueeRow({
         }}
       />
 
-      <div
-        ref={trackRef}
-        className="marquee-track flex"
-        style={{ animation: buildAnim(0), gap: "12px", width: "max-content" }}
-      >
+      <div ref={trackRef} className="marquee-track flex" style={{ gap: "12px", width: "max-content" }}>
         {track.map((item, i) => (
           <MarqueeTile key={`${item.slug}-${i}`} item={item} />
         ))}
@@ -253,10 +199,7 @@ const ToolkitSection = () => {
     <section id="toolkit" className="w-full flex flex-col justify-center relative py-5">
       <RevealGroup className="flex flex-col gap-5">
         <Reveal>
-          <h2
-            className="font-bold"
-            style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}
-          >
+          <h2 className="font-bold" style={{ fontSize: 28, letterSpacing: "-1px", color: "var(--text-color)" }}>
             {config.heading || "Tech Stacks"}
           </h2>
           {config.subheading && (

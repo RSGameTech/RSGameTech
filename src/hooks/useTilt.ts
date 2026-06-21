@@ -1,6 +1,11 @@
-import { useRef, useCallback } from "react";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
 
 const MAX_DEG = 8;
+const LIFT_SCALE = 1.05;
 // Safe zone as a fraction of each dimension (15% of width/height from each edge)
 const SAFE_FRAC = 0.15;
 
@@ -10,10 +15,23 @@ function smoothstep(t: number) {
 
 export function useTilt() {
   const ref = useRef<HTMLElement>(null);
+  const quickRotateX = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
+  const quickRotateY = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
+  const quickScale = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
 
-  const onMouseMove = useCallback((e: React.MouseEvent) => {
+  const { contextSafe } = useGSAP(() => {
     const el = ref.current;
     if (!el) return;
+    // quickTo gives the pointer-follow a touch of smoothing instead of an
+    // instant snap, and a separate, snappier curve for the rest-on-leave pop.
+    quickRotateX.current = gsap.quickTo(el, "rotateX", { duration: 0.4, ease: "power3" });
+    quickRotateY.current = gsap.quickTo(el, "rotateY", { duration: 0.4, ease: "power3" });
+    quickScale.current = gsap.quickTo(el, "scale", { duration: 0.5, ease: "power2" });
+  }, []);
+
+  const onMouseMove = contextSafe((e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el || !quickRotateX.current || !quickRotateY.current || !quickScale.current) return;
     const r = el.getBoundingClientRect();
     const x = e.clientX - r.left;
     const y = e.clientY - r.top;
@@ -34,18 +52,17 @@ export function useTilt() {
     nx *= edgeFade;
     ny *= edgeFade;
 
-    // No transform transition during movement — direct response; tintable properties still animate
-    el.style.transition = "border-color 0.3s, background-color 0.3s";
-    el.style.transform = `rotateY(${nx * MAX_DEG}deg) rotateX(${-ny * MAX_DEG}deg)`;
-  }, []);
+    quickRotateY.current(nx * MAX_DEG);
+    quickRotateX.current(-ny * MAX_DEG);
+    quickScale.current(1 + (LIFT_SCALE - 1) * edgeFade);
+  });
 
-  const onMouseLeave = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    // Re-enable transition for the smooth return-to-rest and tintable property resets
-    el.style.transition = "transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s, background-color 0.3s";
-    el.style.transform = "rotateY(0deg) rotateX(0deg)";
-  }, []);
+  const onMouseLeave = contextSafe(() => {
+    if (!quickRotateX.current || !quickRotateY.current || !quickScale.current) return;
+    quickRotateX.current(0);
+    quickRotateY.current(0);
+    quickScale.current(1);
+  });
 
   return { ref, onMouseMove, onMouseLeave };
 }
