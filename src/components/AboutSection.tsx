@@ -6,7 +6,7 @@ import AboutContent from "@/content/about.mdx";
 const SHOW_ABOUT_STATS = false;
 
 const AboutSection = () => {
-  const photoSrc = config.photo || "/avatar-alt.jpg";
+  const photoSrc = config.photo || "https://cdn.rsgametech.me/avatar.jpg";
 
   return (
     <section id="about" className="w-full flex flex-col justify-center relative py-5">

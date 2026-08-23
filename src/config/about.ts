@@ -7,7 +7,7 @@ export interface Stat {
 export interface AboutConfig {
   heading: string;
   // bio text is sourced from src/content/about.md — edit that file instead
-  // path to profile photo relative to /public (e.g. "/profile-photo.png")
+  // profile photo URL — absolute CDN link, or a path relative to /public (e.g. "/profile-photo.png")
   photo?: string;
   stats: Stat[];
 }
@@ -17,7 +17,7 @@ export interface AboutConfig {
 
 const about: AboutConfig = {
   heading: "About Me",
-  photo: "",
+  photo: "https://cdn.rsgametech.me/avatar.jpg",
   stats: [
     { num: "2+", label: "Years Exp" },
     { num: "15+", label: "Projects" },
