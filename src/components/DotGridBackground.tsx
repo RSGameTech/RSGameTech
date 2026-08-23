@@ -15,18 +15,35 @@ const DotGridBackground = () => {
     if (!ctx) return;
 
     let animId: number;
+    let resizeRaf = 0;
+    let cssSize = { w: 0, h: 0 };
     let dots: { x: number; y: number; opacity: number; target: number; speed: number }[] = [];
 
+    // Measure the canvas element itself, not `window`. The element is a
+    // `.bg-layer`, which is sized to the *large* viewport (100lvh), so this
+    // stays correct while iOS Safari expands/retracts its address bar —
+    // window.innerHeight tracks the small viewport and would leave the strip
+    // Safari uncovers unpainted.
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const rect = canvas.getBoundingClientRect();
+      // Cap DPR at 2: Safari on Retina/iOS reports up to 3, which triples the
+      // fill cost of every dot for no visible gain.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(1, Math.round(rect.width));
+      const h = Math.max(1, Math.round(rect.height));
+
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      // Draw in CSS pixels; the transform handles the device-pixel scaling.
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cssSize = { w, h };
       initDots();
     };
 
     const initDots = () => {
       dots = [];
-      const cols = Math.ceil(canvas.width / DOT_SPACING) + 1;
-      const rows = Math.ceil(canvas.height / DOT_SPACING) + 1;
+      const cols = Math.ceil(cssSize.w / DOT_SPACING) + 1;
+      const rows = Math.ceil(cssSize.h / DOT_SPACING) + 1;
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           dots.push({
@@ -56,7 +73,7 @@ const DotGridBackground = () => {
       }
       lastTime = timestamp;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, cssSize.w, cssSize.h);
       const color = getColor();
 
       for (const dot of dots) {
@@ -75,12 +92,33 @@ const DotGridBackground = () => {
       animId = requestAnimationFrame(draw);
     };
 
+    // Coalesce the resize burst iOS Safari fires while the address bar animates.
+    const scheduleResize = () => {
+      cancelAnimationFrame(resizeRaf);
+      resizeRaf = requestAnimationFrame(resize);
+    };
+
     resize();
     draw(0);
-    window.addEventListener("resize", resize);
+
+    window.addEventListener("resize", scheduleResize);
+    window.addEventListener("orientationchange", scheduleResize);
+    // Safari only reports the address-bar collapse through visualViewport;
+    // a plain `resize` on window is not always dispatched for it.
+    window.visualViewport?.addEventListener("resize", scheduleResize);
+
+    // Authoritative signal: the element's own box changed (theme swap, dvh/lvh
+    // recompute, split view) even when no window-level event fired.
+    const ro =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(scheduleResize) : null;
+    ro?.observe(canvas);
 
     return () => {
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", scheduleResize);
+      window.removeEventListener("orientationchange", scheduleResize);
+      window.visualViewport?.removeEventListener("resize", scheduleResize);
+      ro?.disconnect();
+      cancelAnimationFrame(resizeRaf);
       cancelAnimationFrame(animId);
     };
   }, []);
@@ -88,7 +126,7 @@ const DotGridBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-10 pointer-events-none"
+      className="bg-layer -z-10"
       aria-hidden="true"
     />
   );

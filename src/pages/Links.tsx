@@ -54,7 +54,7 @@ const Links = () => {
   useMouseGlow();
 
   return (
-    <main className="flex flex-col gap-3 px-4 max-w-md mx-auto min-h-screen pb-[20px] pt-[70px]">
+    <main className="flex flex-col gap-3 px-4 max-w-md mx-auto min-h-viewport pb-[20px] pt-[70px]">
       <RevealGroup trigger="mount" className="flex flex-col gap-3">
         {config.title && (
           <Reveal as="h1" className="text-3xl font-bold text-foreground text-center mb-2">

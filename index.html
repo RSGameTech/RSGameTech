@@ -2,7 +2,11 @@
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- Tints the iOS Safari address bar / bottom toolbar so browser chrome blends
+         with the page instead of falling back to an opaque black strip.
+         Kept in sync with the active theme by useTheme + the inline script below. -->
+    <meta name="theme-color" content="#0a0b1a" />
     <title>Ritam Sarkar — Portfolio</title>
     <meta name="description" content="Ritam Sarkar's developer portfolio — full-stack developer building clean, performant web applications." />
     <meta property="og:title" content="Ritam Sarkar — Full-Stack Developer" />
@@ -19,7 +23,12 @@
   <script>
     try {
       var t = localStorage.getItem('portfolio-theme');
-      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute('content', t === 'light' ? '#f0f0f8' : '#0a0b1a');
     } catch(e) {}
   </script>
   <body>

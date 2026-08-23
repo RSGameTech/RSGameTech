@@ -181,9 +181,11 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
     margin: "0 auto",
     left: 0,
     right: 0,
+    // `viewport-fit=cover` lets the page paint under the iOS notch/status bar,
+    // so the nav has to offset itself by the top safe-area inset (0 elsewhere).
     ...(isPill
       ? {
-          top: 12,
+          top: "calc(12px + env(safe-area-inset-top))",
           width: "min(1000px, calc(100% - 32px))",
           height: 52,
           padding: "0 24px",
@@ -191,8 +193,11 @@ const Navbar = ({ showLinks = true }: { showLinks?: boolean }) => {
       : {
           top: 0,
           width: "100%",
-          height: 64,
+          height: "calc(64px + env(safe-area-inset-top))",
           padding: "0 40px",
+          // Must follow the `padding` shorthand — React applies style keys in
+          // insertion order, so the shorthand would otherwise reset this to 0.
+          paddingTop: "env(safe-area-inset-top)",
         }),
   };
 

@@ -114,6 +114,9 @@
     scroll-behavior: auto;
     background-color: var(--bg1);
     transition: background-color 0.4s;
+    /* iOS Safari inflates text in landscape without this. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -121,7 +124,14 @@
     color: var(--text-color);
     font-family: var(--font);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Kills the grey flash Safari paints over tapped elements. */
+    -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
+    /* Guarantees the painted body reaches the bottom of the *large* viewport,
+       so no bare canvas shows through when iOS Safari retracts its toolbars. */
+    min-height: 100vh;
+    min-height: 100lvh;
     transition: background-color 0.4s, color 0.4s;
   }
 
@@ -156,6 +166,46 @@
 }
 
 @layer utilities {
+  /*
+   * Full-bleed backdrop layer for the animated background (dot grid + orbs).
+   *
+   * `position: fixed; inset: 0` is NOT enough on iOS Safari: a fixed element is
+   * laid out against the *small* viewport (toolbars expanded). As you scroll and
+   * Safari retracts the address bar, the visible area grows but the fixed layer
+   * does not, so the newly exposed strip falls through to the page canvas —
+   * a flat --bg1 band that reads as dead black against the animated background.
+   *
+   * Sizing to the *large* viewport (100lvh = height with the toolbars retracted)
+   * makes the layer always at least as tall as the largest possible viewport, so
+   * that strip is already painted before Safari reveals it. The plain `100vh`
+   * line above is the pre-15.4 fallback and resolves to the same large viewport
+   * on iOS anyway. The extra --bg-overscan absorbs rubber-band overscroll.
+   */
+  .bg-layer {
+    --bg-overscan: 2px;
+    position: fixed;
+    top: calc(var(--bg-overscan) * -1);
+    /* left+right rather than 100vw — 100vw counts the desktop scrollbar. */
+    left: calc(var(--bg-overscan) * -1);
+    right: calc(var(--bg-overscan) * -1);
+    height: calc(100vh + var(--bg-overscan) * 2);
+    height: calc(100lvh + var(--bg-overscan) * 2);
+    pointer-events: none;
+    /* No translateZ/backface promotion here: Safari drops `filter: blur()` on
+       children of some promoted+clipped ancestors, which would kill the orbs. */
+  }
+
+  /*
+   * Hero height that does not reflow while iOS Safari's address bar animates.
+   * `100svh` is the *small* viewport (toolbars expanded) so the box is already
+   * at its final size on load — using `100dvh` here would grow the hero mid-
+   * scroll and shove the content down. `100vh` is the pre-15.4 fallback.
+   */
+  .min-h-viewport {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
   .ambient-orb {
     opacity: var(--orb-opacity);
   }

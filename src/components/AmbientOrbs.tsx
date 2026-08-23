@@ -5,26 +5,56 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(useGSAP);
 
 // ── Viewport hook ──────────────────────────────────────────────────────────────
-function useViewport() {
+/**
+ * Measures the orb container rather than `window`.
+ *
+ * The container is a `.bg-layer` sized to the *large* viewport (100lvh), so its
+ * box already spans the strip iOS Safari uncovers when it retracts the address
+ * bar. `window.innerHeight` tracks the small viewport instead, which would keep
+ * the orbs' wander area short and leave that strip empty.
+ */
+function useViewport(ref: React.RefObject<HTMLElement>) {
   const [viewport, setViewport] = useState({
     w: typeof window !== "undefined" ? window.innerWidth : 1200,
     h: typeof window !== "undefined" ? window.innerHeight : 800,
   });
 
   useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
     let raf: number;
-    const onResize = () => {
+    const measure = () => {
       cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() =>
-        setViewport({ w: window.innerWidth, h: window.innerHeight })
-      );
+      raf = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect();
+        setViewport((prev) => {
+          const w = Math.round(rect.width);
+          const h = Math.round(rect.height);
+          // Bail on no-op updates — Safari fires a resize burst per bar animation
+          // and each state change would re-seed every orb's GSAP path.
+          return prev.w === w && prev.h === h ? prev : { w, h };
+        });
+      });
     };
-    window.addEventListener("resize", onResize);
+
+    measure();
+
+    const ro =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    ro?.observe(el);
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    window.visualViewport?.addEventListener("resize", measure);
+
     return () => {
-      window.removeEventListener("resize", onResize);
+      ro?.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+      window.visualViewport?.removeEventListener("resize", measure);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [ref]);
 
   return viewport;
 }
@@ -167,7 +197,8 @@ const Orb = ({ color, orbPx, blur, reducedMotion, vw, vh }: OrbProps) => {
 
 // ── AmbientOrbs ────────────────────────────────────────────────────────────────
 const AmbientOrbs = () => {
-  const { w, h } = useViewport();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { w, h } = useViewport(containerRef);
   const reducedMotion = useReducedMotion();
   const mobile = w < 768;
   const visibleOrbs = mobile ? ORBS.slice(0, 3) : ORBS;
@@ -175,7 +206,8 @@ const AmbientOrbs = () => {
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden pointer-events-none"
+      ref={containerRef}
+      className="bg-layer overflow-hidden"
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >

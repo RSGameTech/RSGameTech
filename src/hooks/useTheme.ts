@@ -20,6 +20,12 @@ export function useTheme() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("portfolio-theme", theme);
+
+    // Keep <meta name="theme-color"> in step with the theme. iOS Safari tints
+    // the address bar and bottom toolbar with this value; without it Safari
+    // picks its own fallback, which shows up as a black band against the page.
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (meta) meta.content = theme === "light" ? "#f0f0f8" : "#0a0b1a";
   }, [theme]);
 
   return { theme, setTheme, themes: THEMES };

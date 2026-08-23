@@ -133,7 +133,7 @@ const Uses = () => {
   useMouseGlow();
 
   return (
-    <main className="flex flex-col gap-4 px-4 max-w-2xl mx-auto min-h-screen pt-[90px]">
+    <main className="flex flex-col gap-4 px-4 max-w-2xl mx-auto min-h-viewport pt-[90px]">
       <RevealGroup trigger="mount" className="flex flex-col gap-4">
         <Reveal className="mb-2">
           <h1 className="text-3xl font-bold text-foreground">{config.title ?? "Uses"}</h1>

@@ -11,7 +11,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <main className="flex flex-col w-full max-w-4xl mx-auto px-4 min-h-screen pt-[90px]">
+    <main className="flex flex-col w-full max-w-4xl mx-auto px-4 min-h-viewport pt-[90px]">
       <RevealGroup trigger="mount" className="flex-1 flex items-center justify-center">
         <Reveal
           className="rounded-2xl p-10 flex flex-col items-center gap-4 text-center"

@@ -64,7 +64,12 @@ const FooterSection = () => {
   const pageLinks = [{ label: "Home", href: "/" }, ...navbarConfig.links];
 
   return (
-    <section className="w-full flex flex-col justify-center relative pt-10 pb-5 mt-auto">
+    <section
+      className="w-full flex flex-col justify-center relative pt-10 pb-5 mt-auto"
+      // viewport-fit=cover paints into the bottom safe area, so pad past the
+      // iOS home indicator; env() is 0 on every other browser.
+      style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}
+    >
       <div
         className="p-5"
         style={{

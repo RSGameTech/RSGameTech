@@ -16,6 +16,7 @@ const HeroSection = () => {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,15 +44,21 @@ const HeroSection = () => {
   );
 
   const scrollToNextSection = () => {
+    // Measure the hero instead of assuming it is exactly window.innerHeight —
+    // on iOS Safari innerHeight tracks whichever viewport the address bar
+    // currently gives us, while the hero is pinned to the small viewport (svh),
+    // so the two disagree by the height of the bar and the scroll overshoots.
+    const target = heroRef.current?.offsetHeight ?? window.innerHeight;
     const lenis = getLenis();
-    if (lenis) lenis.scrollTo(window.innerHeight);
-    else window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+    if (lenis) lenis.scrollTo(target);
+    else window.scrollTo({ top: target, behavior: "smooth" });
   };
 
   return (
     <section
       id="hero"
-      className="w-full relative flex flex-col justify-center min-h-[100vh] min-h-[100dvh]"
+      ref={heroRef}
+      className="w-full relative flex flex-col justify-center min-h-viewport"
     >
       <RevealGroup
         trigger="mount"

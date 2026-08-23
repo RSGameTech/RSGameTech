@@ -16,7 +16,7 @@ const Blogs = () => {
   const { posts, isLoading } = useBlogPosts();
 
   return (
-    <main className="flex flex-col gap-6 px-4 max-w-4xl mx-auto min-h-screen pt-[70px]">
+    <main className="flex flex-col gap-6 px-4 max-w-4xl mx-auto min-h-viewport pt-[70px]">
       <RevealGroup trigger="mount" className="flex flex-col gap-6">
         {/* Header */}
         <Reveal className="text-center mb-4">

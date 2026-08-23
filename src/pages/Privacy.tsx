@@ -3,7 +3,7 @@ import FooterSection from "@/components/FooterSection";
 import PrivacyContent from "@/content/privacy.mdx";
 
 const Privacy = () => (
-  <main className="flex flex-col gap-6 px-4 max-w-2xl mx-auto min-h-screen pt-[90px]">
+  <main className="flex flex-col gap-6 px-4 max-w-2xl mx-auto min-h-viewport pt-[90px]">
     <RevealGroup trigger="mount" className="flex flex-col gap-6">
       <Reveal
         className="rounded-2xl p-6 md:p-8"
