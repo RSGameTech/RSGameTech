@@ -42,7 +42,20 @@
       "Bash(git commit *)",
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({'scripts': d.get\\('scripts',{}\\), 'dependencies': list\\(d.get\\('dependencies',{}\\).keys\\(\\)\\)[:10]}, indent=2\\)\\)\")",
       "Bash(git push *)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(curl -s http://localhost:8080/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl *)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill *)",
+      "Read(//c//**)",
+      "Bash(npm ls *)",
+      "Bash(node -e ' *)",
+      "Bash(npx playwright-cli *)",
+      "Bash(npm list *)",
+      "Bash(npm uninstall *)",
+      "Bash(ls -la .playwright-cli)",
+      "Bash(ls toolkit1.png)",
+      "Bash(powershell -Command \"Stop-Process -Id 23392 -Force\")"
     ]
   }
 }
