@@ -47,7 +47,7 @@ const projects: ProjectsConfig = {
         { label: "TypeScript", color: "#3178c6" },
       ],
       image: "/images/project-image/lucedily-personal-website.png",
-      liveUrl: "https://lucedily-personal-website.vercel.app",
+      liveUrl: "https://lucedily.vercel.app",
       status: "live",
       featured: true,
     },

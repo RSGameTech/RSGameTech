@@ -56,7 +56,7 @@ const uses: UsesConfig = {
       name: "Xiaomi 15",
       icon: "Smartphone",
       specs: {
-        OS: "Hyper OS 3 | Android 16",
+        OS: "Hyper OS 3.1 | Android 16",
         Chipset: "Snapdragon 8 Elite",
         RAM: "12 GB LPDDR5X",
         Storage: "512 GB UFS 4.0",
@@ -75,23 +75,30 @@ const uses: UsesConfig = {
       ],
     },
     {
-      title: "Software",
+      title: "Main Software",
       items: [
         { name: "Brave", note: "Browser", icon: "brave", iconLib: "simple", tint: "12 96% 58%" },
         { name: "Zen", note: "Browser", icon: "zenbrowser", iconLib: "simple", tint: "10 91% 65%" },
+        { name: "Proton Pass", note: "Password Manager", icon: "KeyRound", iconLib: "lucide" },
       ],
     },
     {
-      title: "Code Editor & IDE",
-      items: [{ name: "VS Code", note: "Primary editor for all web projects", icon: "visualstudiocode", iconLib: "simple", tint: "210 100% 50%" }],
+      title: "Desktop Software",
+      items: [
+        { name: "VS Code", note: "Primary editor for all web projects", icon: "Code", iconLib: "lucide" },
+        { name: "Figma", note: "UI design and prototyping", icon: "figma", iconLib: "simple", tint: "260 90% 65%" },
+      ],
+    },
+    {
+      title: "Mobile Apps",
+      items: [
+        { name: "Futo Keyboard", note: "Privacy Based Keyboard", icon: "Keyboard", iconLib: "lucide" },
+        { name: "URLCheck", note: "URL validation tool", icon: "Link2", iconLib: "lucide" },
+      ],
     },
     {
       title: "Terminal & CLI",
       items: [{ name: "Claude Code", note: "AI-powered development in the terminal", icon: "claude", iconLib: "simple", tint: "25 80% 55%" }],
-    },
-    {
-      title: "Design & Creative",
-      items: [{ name: "Figma", note: "UI design and prototyping", icon: "figma", iconLib: "simple", tint: "260 90% 65%" }],
     },
   ],
 };

@@ -25,6 +25,9 @@ import {
   Cable,
   Battery,
   Usb,
+  Link2,
+  Code,
+  KeyRound,
   type LucideIcon as LucideIconType,
 } from "lucide-react";
 
@@ -50,6 +53,9 @@ const lucideIconMap: Record<string, LucideIconType> = {
   cable: Cable,
   battery: Battery,
   usb: Usb,
+  link2: Link2,
+  code: Code,
+  keyround: KeyRound,
 };
 
 import type { UsesItem, PrimaryDevice, UsesGroup } from "@/config/uses";
