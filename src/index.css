@@ -27,6 +27,8 @@
     --nav-bg: rgba(15, 16, 40, 0.65);
     --card-hover-shadow: rgba(0, 0, 0, 0.25);
     --orb-opacity: 0.22;
+    /* Overlapping orbs bloom into a brighter aurora against the dark canvas. */
+    --orb-blend: screen;
 
     /* Shadcn HSL tokens (no hsl() wrapper — Tailwind adds it) */
     --background: 234 35% 8%;
@@ -72,6 +74,9 @@
     --nav-bg: rgba(240, 240, 248, 0.7);
     --card-hover-shadow: rgba(0, 0, 0, 0.08);
     --orb-opacity: 0.2;
+    /* `screen` would wash out against the near-white canvas, so overlaps deepen
+       into a saturated tint instead of blooming. */
+    --orb-blend: multiply;
 
     /* Shadcn HSL tokens */
     --background: 240 22% 97%;
@@ -208,6 +213,32 @@
 
   .ambient-orb {
     opacity: var(--orb-opacity);
+    /*
+     * `.bg-layer` is a fixed, z-indexed, clipped box, so it is already its own
+     * stacking context. That isolation is what we want here: the orbs blend
+     * against each other inside the layer — brightening where they overlap on
+     * dark, deepening on light — while the layer as a whole still composites
+     * normally over the page.
+     */
+    mix-blend-mode: var(--orb-blend);
+  }
+
+  /*
+   * Inner glow. Deliberately a separate element from `.ambient-orb`:
+   *  - the outer owns position/rotation/shape wobble and the inner owns the
+   *    breathing scale+opacity, so the two animations never contend for
+   *    `transform`;
+   *  - `mix-blend-mode` stays on the outer and `filter: blur()` on the inner.
+   *    Collapsing them onto one element makes the filter open a new stacking
+   *    context and the blend stops reaching its siblings.
+   * The radial falloff (set inline, per-orb) does most of the feathering, which
+   * is what lets the blur radius stay modest.
+   */
+  .ambient-orb__glow {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    will-change: transform, opacity;
   }
 
   .scrollbar-hide {
