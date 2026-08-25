@@ -1,7 +1,8 @@
-import { useRef, useState, type ReactNode } from "react";
+import { Suspense, useRef, useState, type ReactNode } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { getLenis } from "@/hooks/useSmoothScroll";
+import PageLoadingFallback from "@/components/PageLoadingFallback";
 
 interface PageTransitionProps {
   children: ReactNode;
@@ -63,7 +64,22 @@ const PageTransition = ({ children, locationKey }: PageTransitionProps) => {
 
   return (
     <div ref={containerRef} style={{ width: "100%" }}>
-      {displayChildren}
+      {/*
+       * The route-level Suspense boundary lives *here*, not above <Routes>.
+       *
+       * Every page is a lazy() import rendered through Layout's outlet. With the
+       * boundary above Layout, a suspending chunk unmounts the entire Layout
+       * subtree — Navbar, AmbientOrbs and the Lenis instance included — and
+       * swaps in the fallback, which is the blank flash on navigation. It is
+       * invisible locally (the chunk is already cached) but plainly visible on
+       * Vercel, where each route chunk is a cold network fetch.
+       *
+       * Keeping it inside the animated container confines suspension to the page
+       * content: the background and navbar stay mounted, this component keeps its
+       * displayKey state so the exit/enter fade still runs, and Lenis is no
+       * longer torn down and rebuilt on every navigation.
+       */}
+      <Suspense fallback={<PageLoadingFallback />}>{displayChildren}</Suspense>
     </div>
   );
 };

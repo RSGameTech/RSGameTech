@@ -44,7 +44,7 @@ class ChunkErrorBoundary extends Component<Props, State> {
       return (
         <div
           className="flex flex-col items-center justify-center min-h-screen gap-4 text-center px-4"
-          style={{ background: "var(--bg1)", color: "var(--text1)" }}
+          style={{ background: "var(--bg1)", color: "var(--text-color)" }}
         >
           <p>Something went wrong loading this page.</p>
           <button

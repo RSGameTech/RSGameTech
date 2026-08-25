@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "@/components/Layout";
 import ChunkErrorBoundary from "@/components/ChunkErrorBoundary";
+import PageLoadingFallback from "@/components/PageLoadingFallback";
 
 const Index = lazy(() => import("./pages/Index"));
 const Links = lazy(() => import("./pages/Links"));
@@ -18,13 +19,6 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
-const LoadingFallback = () => (
-  <div
-    className="flex items-center justify-center min-h-screen"
-    style={{ background: "var(--bg1)" }}
-  />
-);
-
 const App = () => {
   const isLinksSubdomain = window.location.hostname.startsWith("links.");
   const isBlogsSubdomain = window.location.hostname.startsWith("blogs.");
@@ -35,7 +29,14 @@ const App = () => {
         <Toaster />
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ChunkErrorBoundary>
-            <Suspense fallback={<LoadingFallback />}>
+            {/*
+             * Backstop only. Every route sits under Layout, whose PageTransition
+             * owns the boundary that actually catches route chunks — see the note
+             * there. This one exists so a future route added outside Layout can
+             * never fall through to React's "no Suspense boundary" crash, and it
+             * uses the same non-blanking fallback.
+             */}
+            <Suspense fallback={<PageLoadingFallback />}>
               <Routes>
                 {/* Links subdomain: hide nav links */}
                 {isLinksSubdomain ? (
