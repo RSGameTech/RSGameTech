@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useTypingEffect } from "@/hooks/useTypingEffect";
+import { useBlurText } from "@/hooks/useBlurText";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { RevealGroup, Reveal } from "@/components/Reveal";
@@ -9,10 +10,27 @@ import config from "@/config/hero";
 import { socials } from "@/config/socials";
 import SocialIcon from "@/components/SocialIcon";
 
+type HeroTextMode = "typewriter" | "blur";
+
 const HeroSection = () => {
 
   const words = config.gradientWords ?? ["web", "startups", "humans", "tomorrow", "fun"];
   const typedWord = useTypingEffect(words);
+  const blurState = useBlurText(words);
+
+  const [textMode, setTextMode] = useState<HeroTextMode>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("hero-text-mode") as HeroTextMode) || "blur";
+    }
+    return "blur";
+  });
+
+  const handleModeChange = (mode: HeroTextMode) => {
+    setTextMode(mode);
+    localStorage.setItem("hero-text-mode", mode);
+  };
+
+  const displayedWord = textMode === "typewriter" ? typedWord : blurState.currentWord;
 
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
@@ -98,20 +116,40 @@ const HeroSection = () => {
           I build things
           <br />
           for the{" "}
-          <span className="gradient-text">{typedWord}</span>
-          <span
-            style={{
-              display: "inline-block",
-              width: 3,
-              height: "0.9em",
-              background: "var(--accent-purple)",
-              marginLeft: 4,
-              animation: "blink 0.8s step-end infinite",
-              verticalAlign: "baseline",
-              position: "relative",
-              top: "0.05em",
-            }}
-          />
+          {textMode === "blur" ? (
+            <span style={{ position: "relative", display: "inline-block" }}>
+              {/* Outgoing word - opacity/filter controlled imperatively by hook */}
+              <span
+                ref={blurState.outgoingRef}
+                className="gradient-text"
+                style={{ position: "absolute", left: 0, top: 0, opacity: 0 }}
+              />
+              {/* Incoming word - opacity/filter controlled imperatively by hook */}
+              <span
+                ref={blurState.incomingRef}
+                className="gradient-text"
+              >
+                {blurState.currentWord}
+              </span>
+            </span>
+          ) : (
+            <span className="gradient-text">{typedWord}</span>
+          )}
+          {textMode === "typewriter" && (
+            <span
+              style={{
+                display: "inline-block",
+                width: 3,
+                height: "0.9em",
+                background: "var(--accent-purple)",
+                marginLeft: 4,
+                animation: "blink 0.8s step-end infinite",
+                verticalAlign: "baseline",
+                position: "relative",
+                top: "0.05em",
+              }}
+            />
+          )}
         </Reveal>
 
         {/* Tagline */}
@@ -173,6 +211,42 @@ const HeroSection = () => {
         <span className="text-[10px] uppercase tracking-[0.2em] font-medium">Scroll</span>
         <ChevronDown size={20} className="animate-bounce" />
       </div>
+
+      {/* Dev-only toggle panel */}
+      {process.env.NODE_ENV === "development" && (
+        <div
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-xl px-4 py-2"
+          style={{
+            background: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(12px)",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+          }}
+        >
+          <span className="text-xs text-white/60 font-medium uppercase tracking-wider">
+            Hero Text:
+          </span>
+          <button
+            onClick={() => handleModeChange("typewriter")}
+            className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+              textMode === "typewriter"
+                ? "bg-purple-500 text-white"
+                : "bg-white/10 text-white/70 hover:bg-white/20"
+            }`}
+          >
+            Typewriter
+          </button>
+          <button
+            onClick={() => handleModeChange("blur")}
+            className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+              textMode === "blur"
+                ? "bg-purple-500 text-white"
+                : "bg-white/10 text-white/70 hover:bg-white/20"
+            }`}
+          >
+            Blur
+          </button>
+        </div>
+      )}
     </section>
   );
 };

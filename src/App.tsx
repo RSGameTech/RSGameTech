@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { Agentation } from "agentation";
 import Layout from "@/components/Layout";
 import ChunkErrorBoundary from "@/components/ChunkErrorBoundary";
 import PageLoadingFallback from "@/components/PageLoadingFallback";
@@ -27,6 +28,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
+        {process.env.NODE_ENV === "development" && <Agentation />}
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ChunkErrorBoundary>
             {/*

@@ -43,6 +43,7 @@
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.0.0",
+    "agentation": "^3.0.2",
     "autoprefixer": "^10.4.21",
     "caniuse-lite": "^1.0.30001779",
     "eslint": "^9.32.0",
