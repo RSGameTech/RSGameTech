@@ -53,16 +53,16 @@ const projects: ProjectsConfig = {
     },
     {
       title: "Kamyaa Store",
-      description: "An experimental tool built to solve a specific workflow problem — fast, lightweight, and open source.",
+      description: "A thoughtfully designed e-commerce experience featuring curated gifting collections and handcrafted products. Built to make discovering and shopping for meaningful gifts simple, engaging, and delightful, with a festive visual identity and an elegant shopping experience.",
       tags: [
         { label: "React", color: "#61dafb" },
         // { label: "FastAPI", color: "#059669" },
       ],
-      // image: "/images/project-image/kamyaa-store.png",
+      image: "/images/project-image/kamyaa-store.png",
       liveUrl: "https://www.kamyaa.store/",
       // repoUrl: "#",
-      status: "wip",
-      featured: false,
+      status: "live",
+      featured: true,
     },
   ],
 };

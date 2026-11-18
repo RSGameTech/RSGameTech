@@ -12,6 +12,10 @@ import SocialIcon from "@/components/SocialIcon";
 
 type HeroTextMode = "typewriter" | "blur";
 
+const wordStyle: React.CSSProperties = {
+  color: "var(--accent-blue)",
+};
+
 const HeroSection = () => {
 
   const words = config.gradientWords ?? ["web", "startups", "humans", "tomorrow", "fun"];
@@ -111,6 +115,7 @@ const HeroSection = () => {
             fontSize: "clamp(40px, 7vw, 72px)",
             letterSpacing: "-2px",
             color: "var(--text-color)",
+            fontFamily: "'Space Grotesk', sans-serif",
           }}
         >
           I build things
@@ -121,19 +126,18 @@ const HeroSection = () => {
               {/* Outgoing word - opacity/filter controlled imperatively by hook */}
               <span
                 ref={blurState.outgoingRef}
-                className="gradient-text"
-                style={{ position: "absolute", left: 0, top: 0, opacity: 0 }}
+                style={{ ...wordStyle, position: "absolute", left: 0, top: 0, opacity: 0 }}
               />
               {/* Incoming word - opacity/filter controlled imperatively by hook */}
               <span
                 ref={blurState.incomingRef}
-                className="gradient-text"
+                style={wordStyle}
               >
                 {blurState.currentWord}
               </span>
             </span>
           ) : (
-            <span className="gradient-text">{typedWord}</span>
+            <span style={wordStyle}>{typedWord}</span>
           )}
           {textMode === "typewriter" && (
             <span

@@ -20,10 +20,8 @@ const DotGridBackground = () => {
     let dots: { x: number; y: number; opacity: number; target: number; speed: number }[] = [];
 
     // Measure the canvas element itself, not `window`. The element is a
-    // `.bg-layer`, which is sized to the *large* viewport (100lvh), so this
-    // stays correct while iOS Safari expands/retracts its address bar —
-    // window.innerHeight tracks the small viewport and would leave the strip
-    // Safari uncovers unpainted.
+    // `.bg-layer` sized to fill the viewport, so this stays correct whenever
+    // the layer resizes (rotation, split view, toolbar changes).
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       // Cap DPR at 2: Safari on Retina/iOS reports up to 3, which triples the

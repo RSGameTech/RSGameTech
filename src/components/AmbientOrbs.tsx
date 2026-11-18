@@ -5,10 +5,9 @@ import { animate, createScope, createTimer, utils } from "animejs";
 /**
  * Measures the orb container rather than `window`.
  *
- * The container is a `.bg-layer` sized to the *large* viewport (100lvh), so its
- * box already spans the strip iOS Safari uncovers when it retracts the address
- * bar. `window.innerHeight` tracks the small viewport instead, which would keep
- * the orbs' wander area short and leave that strip empty.
+ * The container is a `.bg-layer` sized to fill the viewport, so its box is the
+ * authoritative source for the orbs' wander area; `window.innerHeight` can
+ * disagree with it (zoom, toolbar changes) and drift the orbs off-layer.
  */
 function useViewport(ref: React.RefObject<HTMLElement>) {
   const [viewport, setViewport] = useState({
